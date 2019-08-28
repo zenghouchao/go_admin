@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"time"
 )
 
 var (
@@ -72,7 +73,13 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 		panic("加载后台模板失败")
 	}
 	w.Header().Set("Content-Type", "text/html")
-	tpl.Execute(w, nil)
+	sess, _ := globalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+	adminInfo := sess.Get("userInfo")
+
+	if err := tpl.Execute(w, adminInfo); err != nil {
+		fmt.Println("Template rendering failed !")
+	}
 }
 
 func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -80,8 +87,17 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic("加载后台模板失败")
 	}
+	sess, _ := globalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+	adminInfo := sess.Get("userInfo")
+
 	w.Header().Set("Content-Type", "text/html")
-	tpl.Execute(w, nil)
+	var params map[string]interface{}
+	params = map[string]interface{}{
+		"nowTime":   time.Now().Format("2006-01-02 15:04:05"),
+		"adminInfo": adminInfo,
+	}
+	tpl.Execute(w, params)
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
