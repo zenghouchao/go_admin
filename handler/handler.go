@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/session"
 	"go_admin/connect"
 	"go_admin/dao"
@@ -81,4 +82,17 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	tpl.Execute(w, nil)
+}
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	// 清除SESSION
+	sess, _ := globalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+	err := sess.Delete("userInfo")
+	if err != nil {
+		fmt.Println("session delete error: " + err.Error())
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusFound)
+	return
 }
