@@ -14,6 +14,10 @@ func main() {
 	http.HandleFunc("/home", handler.LoginInterceptor(handler.AdminHandler))
 	http.HandleFunc("/home/welcome", handler.LoginInterceptor(handler.WelcomeHandler))
 	http.HandleFunc("/logout", handler.LoginInterceptor(handler.LogoutHandler))
+	// 文章管理
+	http.HandleFunc("/article", handler.LoginInterceptor(handler.ArticleListHandler))
+	http.HandleFunc("/article/add", handler.LoginInterceptor(handler.ArticleAddHandler))
+
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		fmt.Printf("HTTP服务器启动失败", err.Error())
