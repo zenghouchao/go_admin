@@ -18,8 +18,12 @@ func main() {
 	http.HandleFunc("/article", handler.LoginInterceptor(handler.ArticleListHandler))
 	http.HandleFunc("/article/add", handler.LoginInterceptor(handler.ArticleAddHandler))
 
+	// 栏目分类
+	http.HandleFunc("/cate", handler.LoginInterceptor(handler.CateListHandler))
+	http.HandleFunc("/cate/add", handler.LoginInterceptor(handler.CateAddHandler))
+
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
-		fmt.Printf("HTTP服务器启动失败", err.Error())
+		fmt.Printf("The HTTP server failed to start:\n", err.Error())
 	}
 }
