@@ -9,7 +9,8 @@
         <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
         <link rel="stylesheet" href="/static/css/font.css">
         <link rel="stylesheet" href="/static/css/xadmin.css">
-        <script type="text/javascript" src="/static/lib/layui/layui.js" charset="utf-8"></script>
+<!--         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+ -->        <script type="text/javascript" src="/static/lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript" src="/static/js/xadmin.js"></script>
         <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
         <!--[if lt IE 9]>
@@ -20,7 +21,7 @@
     <body>
         <div class="layui-fluid">
             <div class="layui-row">
-                <form class="layui-form" method="post">
+                <form class="layui-form" id="form_cate">
                  
                     <div class="layui-form-item">
                         <label for="L_username" class="layui-form-label">
@@ -32,7 +33,7 @@
                    
                     <div class="layui-form-item">
                         <label for="L_repass" class="layui-form-label"></label>
-                        <button class="layui-btn" lay-filter="add" lay-submit="">新增</button></div>
+                        <button class="layui-btn" lay-filter="add" lay-submit="add">新增</button></div>
                 </form>
             </div>
         </div>
@@ -42,14 +43,15 @@
                 var form = layui.form,
                 layer = layui.layer;
 
-               
                 //监听提交
                 form.on('submit(add)',
                 function(data) {
-                    console.log(data);
+                   
                     //发异步，把数据提交给后台
-                    $.post("/cate/add", form.serialize(), function(res) {
+                    $.post("/cate/add", $("#form_cate").serialize(), function(res) {
                         console.log(res)
+                    },function(err){
+                        console.log(err)
                     })
                     
                     // layer.alert("增加成功", {

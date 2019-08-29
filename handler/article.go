@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"io"
 	"net/http"
-	"os"
 )
 
 func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,16 +43,21 @@ func CateAddHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 		cateName := r.Form.Get("cate")
-		var result []byte
+		var (
+			result   []byte
+			emptyArr interface{}
+		)
 
-		err = dao.AddCategory(cateName)
+		err := dao.AddCategory(cateName)
+
 		if err != nil {
-			result = utils.JsonReturn(1, "新增栏目失败")
+			result = utils.JsonReturn(1, "新增栏目失败", emptyArr)
 		} else {
-			result = utils.JsonReturn(0, "新增栏目成功")
+			result = utils.JsonReturn(0, "新增栏目成功", emptyArr)
 		}
+		w.WriteHeader(201)
 		io.WriteString(w, string(result))
-		os.Exit(0)
+
 	}
 	tpl, err := template.ParseFiles("./template/article/addCate.html")
 	if err != nil {
