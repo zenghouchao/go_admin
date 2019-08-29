@@ -1,14 +1,31 @@
 package dao
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"go_admin/connect"
+	"log"
+	"strconv"
 )
 
 func AddCategory(cateName string) error {
-	db := connect.Init()
+	stmt, _ := db.Prepare("SELECT id FROM `go_cate` WHERE name = ? ")
+	var id string
+	err := stmt.QueryRow(cateName).Scan(&id)
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf(err.Error())
+		return err
+	}
 
-	stmt, err := db.Prepare("INSERT INTO `go_cate` (name) VALUES(?) ")
+	cateId, _ := strconv.Atoi(id)
+
+	if cateId > 0 {
+		log.Printf("cate name exists")
+		return errors.New("cate name exists")
+	}
+
+	stmt, err = db.Prepare("INSERT INTO `go_cate` (name) VALUES(?) ")
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -23,4 +40,28 @@ func AddCategory(cateName string) error {
 
 	defer stmt.Close()
 	return nil
+}
+
+func GetCateList() ([]*connect.Cate, error) {
+	stmt, err := db.Prepare("SELECT * FROM `go_cate` LIMIT ?")
+	var res []*connect.Cate
+	rows, err := stmt.Query(connect.PageSize)
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		var id, name, status string
+		if err := rows.Scan(&id, &name, &status); err != nil {
+			return res, err
+		}
+		c := &connect.Cate{
+			Id:     id,
+			Name:   name,
+			Status: status,
+		}
+		res = append(res, c)
+	}
+	defer stmt.Close()
+	return res, nil
 }
