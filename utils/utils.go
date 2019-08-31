@@ -16,12 +16,12 @@ func Md5(s string) string {
 }
 
 // 生成API响应JSON数据
-func JsonReturn(errCode int32, msg string, data interface{}) []byte {
+func JsonReturn(errCode int32, msg string) []byte {
 	res := &connect.Response{
 		ErrCode: errCode,
 		Msg:     msg,
-		Data:    data,
 	}
+
 	jsonString, err := json.Marshal(res)
 	if err != nil {
 		fmt.Println("Error converting json data:\n", err.Error())

@@ -2,9 +2,13 @@ package handler
 
 import (
 	"fmt"
+	"go_admin/connect"
 	"go_admin/dao"
+	"go_admin/utils"
 	"html/template"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
@@ -78,4 +82,23 @@ func CateAddHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	tpl.Execute(w, nil)
+}
+
+func CateDelHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	id := r.Form.Get("id")
+	cateId, err := strconv.Atoi(id)
+	if err != nil {
+		log.Printf("ID type conversion error")
+		return
+	}
+	err = dao.DelCateByID(cateId)
+	var res []byte
+	if err != nil {
+		res = utils.JsonReturn(connect.ERR_API, "删除失败!")
+	} else {
+		res = utils.JsonReturn(connect.OK_API, "删除成功!")
+	}
+	w.Header().Set("Content-Length", strconv.Itoa(len(res)))
+	w.Write(res)
 }

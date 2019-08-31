@@ -3,13 +3,18 @@ package connect
 // 后台用户加密盐
 var Salt = "fhsdnfgdjrweirwe1324186asdasdqw"
 
+const (
+	OK_API  = 0
+	ERR_API = 1
+)
+
 var PageSize = 20
 
 // API响应返回值
 type Response struct {
-	ErrCode int32       `json:"errCode"`
-	Msg     string      `json:"msg"`
-	Data    interface{} `json:"data"`
+	ErrCode int32                    `json:"errCode"`
+	Msg     string                   `json:"msg"`
+	Data    []map[string]interface{} `json:"data"`
 }
 
 // 文章分类表结构

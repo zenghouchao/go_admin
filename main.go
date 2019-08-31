@@ -21,6 +21,7 @@ func main() {
 	// 栏目分类
 	http.HandleFunc("/cate", handler.LoginInterceptor(handler.CateListHandler))
 	http.HandleFunc("/cate/add", handler.LoginInterceptor(handler.CateAddHandler))
+	http.HandleFunc("/cate/delete", handler.LoginInterceptor(handler.CateDelHandler))
 
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {

@@ -10,7 +10,7 @@ var (
 	err error
 )
 
-func Init() *sql.DB {
+func ConnectDB() *sql.DB {
 	db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/go_web?charset=utf8")
 
 	if err != nil {

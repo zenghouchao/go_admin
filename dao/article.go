@@ -65,3 +65,13 @@ func GetCateList() ([]*connect.Cate, error) {
 	defer stmt.Close()
 	return res, nil
 }
+
+func DelCateByID(id int) error {
+	stmt, err := db.Prepare("DELETE FROM `go_cate` WHERE id = ?")
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
+}
