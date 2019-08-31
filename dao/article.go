@@ -43,7 +43,7 @@ func AddCategory(cateName string) error {
 }
 
 func GetCateList() ([]*connect.Cate, error) {
-	stmt, err := db.Prepare("SELECT * FROM `go_cate` LIMIT ?")
+	stmt, err := db.Prepare("SELECT * FROM `go_cate` ORDER BY id DESC LIMIT ?")
 	var res []*connect.Cate
 	rows, err := stmt.Query(connect.PageSize)
 	if err != nil {
@@ -69,6 +69,16 @@ func GetCateList() ([]*connect.Cate, error) {
 func DelCateByID(id int) error {
 	stmt, err := db.Prepare("DELETE FROM `go_cate` WHERE id = ?")
 	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
+}
+
+func SaveCateStatus(id int, status int) error {
+	stmt, err := db.Prepare("UPDATE `go_cate` SET `status` = ? WHERE id = ? ")
+	_, err = stmt.Exec(status, id)
 	if err != nil {
 		return err
 	}

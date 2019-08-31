@@ -55,9 +55,7 @@
                             <table class="layui-table layui-form">
                               <thead>
                                 <tr>
-                                  <th width="20">
-                                    <input type="checkbox" name="" lay-skin="primary">
-                                  </th>
+                                
                                   <th width="70">ID</th>
                                   <th>栏目名</th>
                                   <th width="80">状态</th>
@@ -65,10 +63,8 @@
                               </thead>
                               <tbody class="x-cate">
                               {{range .}}
-                                <tr cate-id='1' fid='0' >
-                                  <td>
-                                    <input type="checkbox" name="" lay-skin="primary">
-                                  </td>
+                                <tr cate-id='{{.Id}}' fid='0' >
+                                
                                   <td>{{.Id}}</td>
                                   <td>
                                     <i class="layui-icon x-show" status='true'>&#xe623;</i>
@@ -79,11 +75,11 @@
                                     <input type="checkbox" name="switch"  lay-text="开启|停用"  
                                     {{if gt .Status .Id}}
                                       checked="checked" 
-                                    {{end}} lay-skin="switch">
+                                    {{end}} lay-skin="switch" lay-filter="switchTest" >
                                
                                   </td>
                                   <td class="td-manage">
-                                    <button class="layui-btn layui-btn layui-btn-xs"  onclick="xadmin.open('编辑','admin-edit.html')" ><i class="layui-icon">&#xe642;</i>编辑</button>
+                                 
                                     <button class="layui-btn layui-btn-warm layui-btn-xs"  onclick="xadmin.open('编辑','admin-edit.html')" ><i class="layui-icon">&#xe642;</i>添加子栏目</button>
                                     <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,'{{.Id}}')" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>
                                   </td>
@@ -110,15 +106,38 @@
         <script>
           layui.use(['form'], function(){
             form = layui.form;
-            
-          });
+            $ = layui.jquery;
+
+              // 栏目状态切换
+              form.on('switch(switchTest)', function (data) {
+                  var on = data.elem.checked
+                  var status = on === true ? 1 : 0
+
+                  var id = $(this).parent().parent().attr('cate-id')
+ 
+                  // 请求后端
+                  $.post("/cate/saveState", {"status": status,"id":id}, function(res){
+                      if (typeof(res) == 'string') {
+                        res = eval('(' + res + ')')
+                      }
+
+                      if (res.errCode != 0) {
+                         layer.msg(res.msg, {icon:2, time:1000});
+                         return false
+                      }
+                  })
+            });
+         })   
 
            /*用户-删除*/
           function member_del(obj,id){
               layer.confirm('确认要删除吗？',function(index){
                   //发异步删除数据
                   $.post("/cate/delete", {id:id}, function(res) {
-                    console.log(res)
+                    if (typeof(res) == 'string') {
+                      res = eval('(' + res + ')')
+                    }
+
                     if (res.errCode === 0) {
                       $(obj).parents("tr").remove();
                       layer.msg('已删除!',{icon:1,time:1000});

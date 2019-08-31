@@ -22,6 +22,7 @@ func main() {
 	http.HandleFunc("/cate", handler.LoginInterceptor(handler.CateListHandler))
 	http.HandleFunc("/cate/add", handler.LoginInterceptor(handler.CateAddHandler))
 	http.HandleFunc("/cate/delete", handler.LoginInterceptor(handler.CateDelHandler))
+	http.HandleFunc("/cate/saveState", handler.LoginInterceptor(handler.CateStatusSaveHandler))
 
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
