@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 )
 
 func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,13 +24,52 @@ func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ArticleAddHandler(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles("./template/article/add.html")
-	if err != nil {
-		fmt.Println("Loading template error:" + err.Error())
-		return
+	if r.Method == "POST" {
+		r.ParseForm()
+		pubdate := r.PostForm.Get("pubdate")
+		loc, _ := time.LoadLocation("Local")
+		theTime, _ := time.ParseInLocation("2006-01-02", pubdate, loc)
+
+		data := &connect.Article{
+			Cate_id: r.PostForm.Get("cateId"),
+			Title:   strings.TrimSpace(r.PostForm.Get("title")),
+			Content: strings.TrimSpace(r.PostForm.Get("desc")),
+			Time:    theTime.Unix(),
+			Status:  r.PostForm.Get("status"),
+			Author:  strings.TrimSpace(r.PostForm.Get("author")),
+		}
+		err := dao.AddArticle(data)
+		var result []byte
+		if err != nil {
+			result = utils.JsonReturn(connect.ERR_API, "发布文章失败")
+		} else {
+			result = utils.JsonReturn(connect.OK_API, "发布文章成功")
+		}
+		w.Header().Set("Content-Length", strconv.Itoa(len(result)))
+		w.Write(result)
+
+	} else {
+		// 获取所以栏目
+		cates, err := dao.GetCateList("")
+		if err != nil {
+			log.Println("no found cate data error:", err.Error())
+		}
+
+		tpl, err := template.ParseFiles("./template/article/add.html")
+		if err != nil {
+			fmt.Println("Loading template error:" + err.Error())
+			return
+		}
+		w.Header().Set("Content-Type", "text/html")
+
+		var params map[string]interface{}
+		params = map[string]interface{}{
+			"cates": cates,
+		}
+		if err = tpl.Execute(w, params); err != nil {
+			fmt.Printf("add article template load error: ", err.Error())
+		}
 	}
-	w.Header().Set("Content-Type", "text/html")
-	tpl.Execute(w, nil)
 }
 
 func CateListHandler(w http.ResponseWriter, r *http.Request) {
@@ -37,15 +78,19 @@ func CateListHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Loading template error:" + err.Error())
 		return
 	}
+	// 搜索请求
+	query := r.URL.Query()
+	catName := query.Get("cate_name")
+
 	// 获取栏目数据
-	res, err := dao.GetCateList()
-	if err != nil {
+	res, catesErr := dao.GetCateList(catName)
+	if catesErr != nil {
 		fmt.Println("获取栏目数据失败")
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/html")
-	if err := tpl.Execute(w, res); err != nil {
+	if err = tpl.Execute(w, res); err != nil {
 		fmt.Println("load cate template error:", err.Error())
 	}
 }

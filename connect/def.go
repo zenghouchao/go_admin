@@ -23,3 +23,14 @@ type Cate struct {
 	Name   string
 	Status string
 }
+
+// 文章表结构
+type Article struct {
+	Id      string
+	Cate_id string
+	Title   string
+	Content string
+	Time    int64
+	Status  string
+	Author  string
+}

@@ -21,136 +21,104 @@
         <div class="layui-fluid">
             <div class="layui-row">
                 <form class="layui-form">
+
                     <div class="layui-form-item">
                         <label for="username" class="layui-form-label">
-                            <span class="x-red">*</span>用户名</label>
+                            <span class="x-red">*</span>文章标题</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="username" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+                            <input type="text" id="title" name="title" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+                    </div>  
+
+                  <div class="layui-form-item">
+                    <label for="cateId" class="layui-form-label">
+                        <span class="x-red">*</span>文章栏目</label>
+                    <div class="layui-input-inline">
+                        <select name="cateId">
+                         {{range .cates}}
+                            <option value="{{.Id}}">{{.Name}}</option>
+                          {{end}}  
+                        </select>
                     </div>
-                    <div class="layui-form-item">
+                  </div>
+
+                   <div class="layui-form-item">
                         <label for="username" class="layui-form-label">
-                            <span class="x-red">*</span>收货人</label>
+                            <span class="x-red">*</span>作者</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="username" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="phone" class="layui-form-label">
-                            <span class="x-red">*</span>手机</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="phone" name="phone" required="" lay-verify="phone" autocomplete="off" class="layui-input"></div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="username" class="layui-form-label">
-                            <span class="x-red">*</span>收货地址</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="username" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="username" class="layui-form-label">
-                            <span class="x-red">*</span>配送物流</label>
-                        <div class="layui-input-inline">
-                            <select id="shipping" name="shipping" class="valid">
-                                <option value="shentong">申通物流</option>
-                                <option value="shunfeng">顺丰物流</option></select>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="username" class="layui-form-label">
-                            <span class="x-red">*</span>支付方式</label>
-                        <div class="layui-input-inline">
-                            <select name="contrller">
-                                <option>支付方式</option>
-                                <option>支付宝</option>
-                                <option>微信</option>
-                                <option>货到付款</option></select>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="L_email" class="layui-form-label">
-                            <span class="x-red">*</span>发票抬头</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="L_email" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
-                        <div class="layui-form-mid layui-word-aux">
-                            <span class="x-red">*</span></div>
-                    </div>
+                            <input type="text" id="author" name="author" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+                    </div> 
+
+
                     <div class="layui-form-item layui-form-text">
-                        <label for="desc" class="layui-form-label">商品增加</label>
-                        <div class="layui-input-block">
-                            <table class="layui-table">
-                                <tbody>
-                                    <tr>
-                                        <td>haier海尔 BC-93TMPF 93升单门冰箱</div></td>
-                        <td>0.01</div></td>
-                    <td>984</div></td>
-            <td>1</td>
-            <td>删除</td></tr>
-            <tr>
-                <td>haier海尔 BC-93TMPF 93升单门冰箱</div></td>
-        <td>0.01</div></td>
-        <td>984</div></td>
-        <td>1</td>
-        <td>删除</td></tr>
-        </tbody>
-        </table>
-        </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label for="desc" class="layui-form-label">描述</label>
-            <div class="layui-input-block">
-                <textarea placeholder="请输入内容" id="desc" name="desc" class="layui-textarea"></textarea>
-            </div>
-        </div>
+                        <label for="desc" class="layui-form-label">描述</label>
+                        <div class="layui-input-inline">
+                            <textarea placeholder="请输入内容" id="desc" name="desc" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="pubdate" class="layui-form-label">
+                            发布时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="pubdate" name="pubdate" required="" lay-verify="required"  class="layui-input"></div>
+                    </div>
+
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">是否显示</label>
+                      <div class="layui-input-block">
+                        <input type="radio" name="status" value="1" title="显示"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>是</div></div>
+
+                        <input type="radio" name="status" value="0" title="不显示" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>否</div></div>
+                      </div>
+                    </div>
+           
+                   
+     
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label"></label>
-            <button class="layui-btn" lay-filter="add" lay-submit="">增加</button></div>
+            <button class="layui-btn" lay-filter="add" lay-submit="add">确认发布</button></div>
         </form>
         </div>
         </div>
-        <script>layui.use(['form', 'layer'],
+        <script>layui.use(['form', 'layer', 'laydate'],
             function() {
                 $ = layui.jquery;
                 var form = layui.form,
                 layer = layui.layer;
+                var laydate = layui.laydate;
 
-                //自定义验证规则
-                form.verify({
-                    nikename: function(value) {
-                        if (value.length < 5) {
-                            return '昵称至少得5个字符啊';
-                        }
-                    },
-                    pass: [/(.+){6,12}$/, '密码必须6到12位'],
-                    repass: function(value) {
-                        if ($('#L_pass').val() != $('#L_repass').val()) {
-                            return '两次密码不一致';
-                        }
-                    }
+                // 发布时间监听
+                laydate.render({
+                    elem: '#pubdate', // 发布时间
+                    trigger: "click",
+                    theme: 'grid',
+                    value: new Date()
                 });
 
+            
                 //监听提交
                 form.on('submit(add)',
                 function(data) {
                     console.log(data);
-                    //发异步，把数据提交给php
-                    layer.alert("增加成功", {
-                        icon: 6
-                    },
-                    function() {
-                        // 获得frame索引
-                        var index = parent.layer.getFrameIndex(window.name);
-                        //关闭当前frame
-                        parent.layer.close(index);
-                    });
-                    return false;
+                    
+                    $.post("/article/add", data.field, function(res) {
+                        console.log(res)
+                        if (typeof(res) == 'string') {
+                          res = eval('(' + res + ')')
+                        }
+                        if (res.errCode === 0) {
+                            layer.msg('发布文章成功!',{icon:1, time:1000});
+                        } else {
+                            layer.msg(res.msg, {icon:2, time:1000});
+                        }
+                        xadmin.close();
+                        xadmin.father_reload();
+                        return false;
+                    })
                 });
 
             });</script>
-        <script>var _hmt = _hmt || []; (function() {
-                var hm = document.createElement("script");
-                hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-                var s = document.getElementsByTagName("script")[0];
-                s.parentNode.insertBefore(hm, s);
-            })();</script>
+       
     </body>
 
 </html>

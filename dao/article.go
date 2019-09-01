@@ -7,6 +7,7 @@ import (
 	"go_admin/connect"
 	"log"
 	"strconv"
+	"strings"
 )
 
 func AddCategory(cateName string) error {
@@ -42,8 +43,13 @@ func AddCategory(cateName string) error {
 	return nil
 }
 
-func GetCateList() ([]*connect.Cate, error) {
-	stmt, err := db.Prepare("SELECT * FROM `go_cate` ORDER BY id DESC LIMIT ?")
+func GetCateList(cate string) ([]*connect.Cate, error) {
+	cate_sql := "SELECT * FROM `go_cate` "
+	if cate != "" {
+		cate_sql += " WHERE name LIKE '" + strings.TrimSpace(cate) + "%'"
+	}
+
+	stmt, err := db.Prepare(cate_sql + " ORDER BY id DESC LIMIT ?")
 	var res []*connect.Cate
 	rows, err := stmt.Query(connect.PageSize)
 	if err != nil {
@@ -79,6 +85,21 @@ func DelCateByID(id int) error {
 func SaveCateStatus(id int, status int) error {
 	stmt, err := db.Prepare("UPDATE `go_cate` SET `status` = ? WHERE id = ? ")
 	_, err = stmt.Exec(status, id)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
+}
+
+func AddArticle(dataMap *connect.Article) error {
+
+	stmt, err := db.Prepare("INSERT INTO `go_article` (cateId,title,content,time,status,author) VALUES(?,?,?,?,?,?) ")
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	_, err = stmt.Exec(dataMap.Cate_id, dataMap.Title, dataMap.Content, dataMap.Time, dataMap.Status, dataMap.Author)
 	if err != nil {
 		return err
 	}
