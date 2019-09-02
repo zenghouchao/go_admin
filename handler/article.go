@@ -23,7 +23,6 @@ func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
 	for _, item := range data {
 		pubdate := time.Unix(item.Time, 0).Format("2006-01-02")
 		item.Pubdate = pubdate
-		fmt.Println(item)
 	}
 	tpl, err := template.ParseFiles("./template/article/list.html")
 	if err != nil {
@@ -82,6 +81,29 @@ func ArticleAddHandler(w http.ResponseWriter, r *http.Request) {
 		if err = tpl.Execute(w, params); err != nil {
 			fmt.Printf("add article template load error: ", err.Error())
 		}
+	}
+}
+
+func ArticleDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	var result []byte
+	if r.Method == "POST" {
+		r.ParseForm()
+		articleId := r.Form.Get("id")
+		if articleId == "" {
+			result = utils.JsonReturn(connect.ERR_API, "文章ID不能为空")
+			w.Write(result)
+			return
+		}
+		id, _ := strconv.Atoi(articleId)
+		err := dao.DelArticleByID(id)
+		if err != nil {
+			result = utils.JsonReturn(connect.ERR_API, "删除文章失败")
+		} else {
+			result = utils.JsonReturn(connect.OK_API, "删除文章成功")
+		}
+
+		w.Header().Set("Content-Length", strconv.Itoa(len(result)))
+		w.Write(result)
 	}
 }
 
@@ -158,8 +180,6 @@ func CateStatusSaveHandler(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		status := r.Form.Get("status")
 		id := r.Form.Get("id")
-
-		fmt.Println(status, id)
 
 		var res []byte
 		if status == "" || id == "" {

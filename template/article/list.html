@@ -92,7 +92,7 @@
                                         <td class="td-manage">
                                             <a title="查看" onclick="xadmin.open('编辑','order-view.html')" href="javascript:;">
                                                 <i class="layui-icon">&#xe63c;</i></a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                            <a title="删除" onclick="member_del(this,'{{.Id}}')" href="javascript:;">
                                                 <i class="layui-icon">&#xe640;</i></a>
                                         </td>
                                     </tr>
@@ -159,11 +159,17 @@
             layer.confirm('确认要删除吗？',
             function(index) {
                 //发异步删除数据
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!', {
-                    icon: 1,
-                    time: 1000
-                });
+                $.post("/article/delete", {"id":id}, function(res) {
+                    if (typeof(res) == 'string') {
+                      res = eval('(' + res + ')')
+                    }
+                    if (res.errCode == 0) {
+                        $(obj).parents("tr").remove();
+                        layer.msg('删除成功!',{icon:1,time:1000});
+                    } else {
+                        layer.msg(res.msg, {icon:2,time:1000});
+                    }
+                })
             });
         }
 

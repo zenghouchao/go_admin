@@ -17,6 +17,7 @@ func main() {
 	// 文章管理
 	http.HandleFunc("/article", handler.LoginInterceptor(handler.ArticleListHandler))
 	http.HandleFunc("/article/add", handler.LoginInterceptor(handler.ArticleAddHandler))
+	http.HandleFunc("/article/delete", handler.LoginInterceptor(handler.ArticleDeleteHandler))
 
 	// 栏目分类
 	http.HandleFunc("/cate", handler.LoginInterceptor(handler.CateListHandler))

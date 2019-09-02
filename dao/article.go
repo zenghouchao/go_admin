@@ -43,6 +43,16 @@ func AddCategory(cateName string) error {
 	return nil
 }
 
+func DelArticleByID(articleId int) error {
+	stmt, _ := db.Prepare("DELETE FROM `go_article` WHERE id = ?")
+	_, err := stmt.Exec(articleId)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
+}
+
 func GetCateList(cate string) ([]*connect.Cate, error) {
 	cate_sql := "SELECT * FROM `go_cate` "
 	if cate != "" {
