@@ -106,3 +106,40 @@ func AddArticle(dataMap *connect.Article) error {
 	defer stmt.Close()
 	return nil
 }
+
+func GetArticleList() ([]*connect.Article, error) {
+	stmt, _ := db.Prepare(`SELECT a.id,c.name,a.title,a.content,a.time,a.status,a.author FROM go_article AS a 
+		LEFT JOIN go_cate AS c ON c.id = a.cateId ORDER BY a.id DESC LIMIT ? `)
+
+	rows, err := stmt.Query(connect.PageSize)
+	var result []*connect.Article
+	if err != nil {
+		return result, err
+	}
+
+	for rows.Next() {
+		var (
+			id, cate, title, content, status, author string
+			pubTime                                  int64
+		)
+
+		err = rows.Scan(&id, &cate, &title, &content, &pubTime, &status, &author)
+
+		if err != nil {
+			return result, err
+		}
+
+		r := &connect.Article{
+			Id:      id,
+			Cate_id: cate,
+			Title:   title,
+			Content: content,
+			Time:    pubTime,
+			Status:  status,
+			Author:  author,
+		}
+		result = append(result, r)
+	}
+	defer rows.Close()
+	return result, nil
+}

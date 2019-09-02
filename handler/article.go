@@ -14,13 +14,22 @@ import (
 )
 
 func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
+	// 获取文章信息
+	data, err := dao.GetArticleList()
+	if err != nil {
+		fmt.Println("get article data failure", err.Error())
+		return
+	}
+	fmt.Println(data)
 	tpl, err := template.ParseFiles("./template/article/list.html")
 	if err != nil {
 		fmt.Println("Loading template error:" + err.Error())
 		return
 	}
 	w.Header().Set("Content-Type", "text/html")
-	tpl.Execute(w, nil)
+	if err = tpl.Execute(w, data); err != nil {
+		panic(err.Error())
+	}
 }
 
 func ArticleAddHandler(w http.ResponseWriter, r *http.Request) {
