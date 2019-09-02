@@ -20,7 +20,11 @@ func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("get article data failure", err.Error())
 		return
 	}
-	fmt.Println(data)
+	for _, item := range data {
+		pubdate := time.Unix(item.Time, 0).Format("2006-01-02")
+		item.Pubdate = pubdate
+		fmt.Println(item)
+	}
 	tpl, err := template.ParseFiles("./template/article/list.html")
 	if err != nil {
 		fmt.Println("Loading template error:" + err.Error())

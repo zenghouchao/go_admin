@@ -33,4 +33,5 @@ type Article struct {
 	Time    int64
 	Status  string
 	Author  string
+	Pubdate string // Time字段的时间戳格式化
 }

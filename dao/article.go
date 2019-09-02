@@ -52,6 +52,7 @@ func GetCateList(cate string) ([]*connect.Cate, error) {
 	stmt, err := db.Prepare(cate_sql + " ORDER BY id DESC LIMIT ?")
 	var res []*connect.Cate
 	rows, err := stmt.Query(connect.PageSize)
+
 	if err != nil {
 		return res, err
 	}

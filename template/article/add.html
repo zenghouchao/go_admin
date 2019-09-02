@@ -33,7 +33,8 @@
                     <label for="cateId" class="layui-form-label">
                         <span class="x-red">*</span>文章栏目</label>
                     <div class="layui-input-inline">
-                        <select name="cateId">
+                        <select name="cateId" lay-verify="required">
+                         <option value="">请选择</option>
                          {{range .cates}}
                             <option value="{{.Id}}">{{.Name}}</option>
                           {{end}}  
