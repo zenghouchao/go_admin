@@ -166,7 +166,7 @@ func CateDelHandler(w http.ResponseWriter, r *http.Request) {
 		err = dao.DelCateByID(cateId)
 		var res []byte
 		if err != nil {
-			res = utils.JsonReturn(connect.ERR_API, "删除失败!")
+			res = utils.JsonReturn(connect.ERR_API, err.Error())
 		} else {
 			res = utils.JsonReturn(connect.OK_API, "删除成功!")
 		}

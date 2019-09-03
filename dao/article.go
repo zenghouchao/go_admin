@@ -84,6 +84,18 @@ func GetCateList(cate string) ([]*connect.Cate, error) {
 }
 
 func DelCateByID(id int) error {
+	// 栏目下存在文章则不删除
+	stmt, _ := db.Prepare("SELECT id FROM `go_article` WHERE cateId = ?")
+	row := stmt.QueryRow(id)
+	var articleId string
+	if err := row.Scan(&articleId); err != nil && err != sql.ErrNoRows {
+		return err
+	}
+
+	if articleId != "" {
+		return errors.New("该分类下存在文章不能删除!")
+	}
+
 	stmt, err := db.Prepare("DELETE FROM `go_cate` WHERE id = ?")
 	_, err = stmt.Exec(id)
 	if err != nil {
