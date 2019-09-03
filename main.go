@@ -18,6 +18,8 @@ func main() {
 	http.HandleFunc("/article", handler.LoginInterceptor(handler.ArticleListHandler))
 	http.HandleFunc("/article/add", handler.LoginInterceptor(handler.ArticleAddHandler))
 	http.HandleFunc("/article/delete", handler.LoginInterceptor(handler.ArticleDeleteHandler))
+	http.HandleFunc("/article/update", handler.LoginInterceptor(handler.ArticleUpdateHandler))
+	http.HandleFunc("/article/edit/", handler.LoginInterceptor(handler.ArticleEditPageHandler))
 
 	// 栏目分类
 	http.HandleFunc("/cate", handler.LoginInterceptor(handler.CateListHandler))

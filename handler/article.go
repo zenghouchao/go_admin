@@ -107,6 +107,50 @@ func ArticleDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ArticleUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		r.ParseForm()
+		postFrom := r.PostForm
+		fmt.Println(postFrom)
+
+	}
+}
+
+// 编辑文章页面
+func ArticleEditPageHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	id := query.Get("id")
+	aid, _ := strconv.Atoi(id)
+	// 获取文章信息
+	data, err := dao.GetFirstArticleByID(aid)
+	if err != nil {
+		fmt.Println("get article data failure:" + err.Error())
+	}
+	formatDate := time.Unix(data.Time, 0).Format("2006-01-02")
+	data.Pubdate = formatDate
+
+	// 获取栏目
+	cates, err := dao.GetCateList("")
+	if err != nil {
+		log.Println("no found cate data error:", err.Error())
+	}
+
+	params := map[string]interface{}{
+		"cates":   cates,
+		"article": data,
+	}
+
+	tpl, err := template.ParseFiles("./template/article/edit.html")
+	if err != nil {
+		fmt.Println("Loading article edit page template error:" + err.Error())
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	if err = tpl.Execute(w, params); err != nil {
+		fmt.Println("load article edit page template failure:", err.Error())
+	}
+}
+
 func CateListHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./template/article/cate.html")
 	if err != nil {

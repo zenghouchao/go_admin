@@ -166,3 +166,30 @@ func GetArticleList() ([]*connect.Article, error) {
 	defer rows.Close()
 	return result, nil
 }
+
+func GetFirstArticleByID(id int) (*connect.Article, error) {
+	stmt, _ := db.Prepare("SELECT * FROM `go_article` WHERE id = ?")
+	var (
+		aid, cate, title, content, status, author string
+		pubTime                                   int64
+		r                                         *connect.Article
+	)
+
+	err := stmt.QueryRow(id).Scan(&aid, &cate, &title, &content, &pubTime, &status, &author)
+	if err != nil && err != sql.ErrNoRows {
+		return r, err
+	}
+	defer stmt.Close()
+
+	r = &connect.Article{
+		Id:      aid,
+		Cate_id: cate,
+		Title:   title,
+		Content: content,
+		Time:    pubTime,
+		Status:  status,
+		Author:  author,
+	}
+	return r, nil
+
+}
