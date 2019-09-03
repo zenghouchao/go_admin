@@ -130,6 +130,21 @@ func AddArticle(dataMap *connect.Article) error {
 	return nil
 }
 
+func UpdateArtice(dataMap *connect.Article) error {
+	update_sql := `UPDATE go_article SET cateId =?, title =?, content =?,time=?,
+	status=?,author=? WHERE id=?`
+	stmt, err := db.Prepare(update_sql)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(dataMap.Cate_id, dataMap.Title, dataMap.Content, dataMap.Time, dataMap.Status, dataMap.Author, dataMap.Id)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
+}
+
 func GetArticleList() ([]*connect.Article, error) {
 	stmt, _ := db.Prepare(`SELECT a.id,c.name,a.title,a.content,a.time,a.status,a.author FROM go_article AS a 
 		LEFT JOIN go_cate AS c ON c.id = a.cateId ORDER BY a.id DESC LIMIT ? `)

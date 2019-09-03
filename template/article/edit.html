@@ -85,7 +85,7 @@
      
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label"></label>
-            <button class="layui-btn" lay-filter="add" lay-submit="add">确认发布</button></div>
+            <button class="layui-btn" lay-filter="add" lay-submit="add">确认修改</button></div>
         </form>
         </div>
         </div>
@@ -101,7 +101,6 @@
                     elem: '#pubdate', // 发布时间
                     trigger: "click",
                     theme: 'grid',
-                    // value: new Date()
                 });
 
             
@@ -110,13 +109,13 @@
                 function(data) {
                     console.log(data);
                     
-                    $.post("/article/add", data.field, function(res) {
+                    $.post("/article/update", data.field, function(res) {
                         console.log(res)
                         if (typeof(res) == 'string') {
                           res = eval('(' + res + ')')
                         }
                         if (res.errCode === 0) {
-                            layer.msg('发布文章成功!',{icon:1, time:1000});
+                            layer.msg('修改文章成功!',{icon:1, time:1000});
                         } else {
                             layer.msg(res.msg, {icon:2, time:1000});
                         }

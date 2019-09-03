@@ -108,11 +108,33 @@ func ArticleDeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ArticleUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	var response []byte
 	if r.Method == "POST" {
 		r.ParseForm()
 		postFrom := r.PostForm
-		fmt.Println(postFrom)
 
+		pubdate := postFrom.Get("pubdate")
+		loc, _ := time.LoadLocation("Local")
+		theTime, _ := time.ParseInLocation("2006-01-02", pubdate, loc)
+
+		data := &connect.Article{
+			Id:      postFrom.Get("id"),
+			Cate_id: postFrom.Get("cateId"),
+			Title:   strings.TrimSpace(postFrom.Get("title")),
+			Content: strings.TrimSpace(postFrom.Get("desc")),
+			Time:    theTime.Unix(),
+			Status:  postFrom.Get("status"),
+			Author:  strings.TrimSpace(postFrom.Get("author")),
+		}
+
+		err := dao.UpdateArtice(data)
+		if err != nil {
+			response = utils.JsonReturn(connect.ERR_API, "更新文章失败！")
+		} else {
+			response = utils.JsonReturn(connect.ERR_API, "更新文章成功！")
+		}
+		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
+		w.Write(response)
 	}
 }
 
