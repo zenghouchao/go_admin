@@ -92,8 +92,7 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 	adminInfo := sess.Get("userInfo")
 
 	w.Header().Set("Content-Type", "text/html")
-	var params map[string]interface{}
-	params = map[string]interface{}{
+	params := map[string]interface{}{
 		"nowTime":   time.Now().Format("2006-01-02 15:04:05"),
 		"adminInfo": adminInfo,
 	}
