@@ -147,7 +147,7 @@ func UpdateArtice(dataMap *connect.Article) error {
 
 func GetArticleList() ([]*connect.Article, error) {
 	stmt, _ := db.Prepare(`SELECT a.id,c.name,a.title,a.content,a.time,a.status,a.author FROM go_article AS a 
-		LEFT JOIN go_cate AS c ON c.id = a.cateId ORDER BY a.id DESC LIMIT ? `)
+		LEFT JOIN go_cate AS c ON c.id = a.cateId WHERE c.status = 1 ORDER BY a.id DESC LIMIT ? `)
 
 	rows, err := stmt.Query(connect.PageSize)
 	var result []*connect.Article
@@ -207,4 +207,31 @@ func GetFirstArticleByID(id int) (*connect.Article, error) {
 	}
 	return r, nil
 
+}
+
+func GetOnCate() ([]*connect.Cate, error) {
+	cate_sql := "SELECT * FROM `go_cate` WHERE status = 1 "
+
+	stmt, err := db.Prepare(cate_sql + " ORDER BY id DESC LIMIT ?")
+	var res []*connect.Cate
+	rows, err := stmt.Query(connect.PageSize)
+
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		var id, name, status string
+		if err := rows.Scan(&id, &name, &status); err != nil {
+			return res, err
+		}
+		c := &connect.Cate{
+			Id:     id,
+			Name:   name,
+			Status: status,
+		}
+		res = append(res, c)
+	}
+	defer stmt.Close()
+	return res, nil
 }

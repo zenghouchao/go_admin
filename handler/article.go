@@ -62,7 +62,7 @@ func ArticleAddHandler(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		// 获取所以栏目
-		cates, err := dao.GetCateList("")
+		cates, err := dao.GetOnCate()
 		if err != nil {
 			log.Println("no found cate data error:", err.Error())
 		}
@@ -152,7 +152,7 @@ func ArticleEditPageHandler(w http.ResponseWriter, r *http.Request) {
 	data.Pubdate = formatDate
 
 	// 获取栏目
-	cates, err := dao.GetCateList("")
+	cates, err := dao.GetOnCate()
 	if err != nil {
 		log.Println("no found cate data error:", err.Error())
 	}
