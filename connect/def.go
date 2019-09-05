@@ -8,13 +8,13 @@ const (
 	ERR_API = 1
 )
 
-var PageSize = 20
+var PageSize = 10
 
 // API响应返回值
 type Response struct {
 	ErrCode int32                    `json:"errCode"`
 	Msg     string                   `json:"msg"`
-	Data    []map[string]interface{} `json:"data"`
+	Data    []map[string]interface{} `json:"data,omitempty"`
 }
 
 // 文章分类表结构

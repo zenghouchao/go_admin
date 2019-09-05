@@ -145,14 +145,25 @@ func UpdateArtice(dataMap *connect.Article) error {
 	return nil
 }
 
-func GetArticleList() ([]*connect.Article, error) {
-	stmt, _ := db.Prepare(`SELECT a.id,c.name,a.title,a.content,a.time,a.status,a.author FROM go_article AS a 
-		LEFT JOIN go_cate AS c ON c.id = a.cateId WHERE c.status = 1 ORDER BY a.id DESC LIMIT ? `)
+func GetArticleList(page int) (int, []*connect.Article, error) {
 
-	rows, err := stmt.Query(connect.PageSize)
-	var result []*connect.Article
+	var (
+		count  int
+		result []*connect.Article
+	)
+	err := db.QueryRow(`select count(*) FROM go_article AS a 
+		LEFT JOIN go_cate AS c ON c.id = a.cateId WHERE c.status = 1`).Scan(&count)
 	if err != nil {
-		return result, err
+		return count, result, err
+	}
+
+	stmt, _ := db.Prepare(`SELECT a.id,c.name,a.title,a.content,a.time,a.status,a.author FROM go_article AS a 
+		LEFT JOIN go_cate AS c ON c.id = a.cateId WHERE c.status = 1 ORDER BY a.id DESC LIMIT ?,? `)
+
+	rows, err := stmt.Query((page-1)*connect.PageSize, connect.PageSize)
+
+	if err != nil {
+		return count, result, err
 	}
 
 	for rows.Next() {
@@ -164,7 +175,7 @@ func GetArticleList() ([]*connect.Article, error) {
 		err = rows.Scan(&id, &cate, &title, &content, &pubTime, &status, &author)
 
 		if err != nil {
-			return result, err
+			return count, result, err
 		}
 
 		r := &connect.Article{
@@ -179,7 +190,7 @@ func GetArticleList() ([]*connect.Article, error) {
 		result = append(result, r)
 	}
 	defer rows.Close()
-	return result, nil
+	return count, result, nil
 }
 
 func GetFirstArticleByID(id int) (*connect.Article, error) {

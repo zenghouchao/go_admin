@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/ixre/gof/web/pager"
 	"go_admin/connect"
 	"go_admin/dao"
 	"go_admin/utils"
@@ -14,8 +15,20 @@ import (
 )
 
 func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
+	// 获取当前页码
+	var p int
+	query := r.URL.Query()
+	page := query.Get("page")
+
+	if page == "" {
+		p = 1
+		page = "1"
+	} else {
+		p, _ = strconv.Atoi(page)
+	}
+
 	// 获取文章信息
-	data, err := dao.GetArticleList()
+	count, data, err := dao.GetArticleList(p)
 	if err != nil {
 		fmt.Println("get article data failure", err.Error())
 		return
@@ -29,8 +42,17 @@ func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Loading template error:" + err.Error())
 		return
 	}
+	// page
+	ps := pager.NewUrlPager(pager.MathPages(count, connect.PageSize), p, "/article?page=%d")
+	pagerHtml := ps.PagerString()
+
+	params := map[string]interface{}{
+		"page": template.HTML(pagerHtml),
+		"list": data,
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	if err = tpl.Execute(w, data); err != nil {
+	if err = tpl.Execute(w, params); err != nil {
 		panic(err.Error())
 	}
 }
