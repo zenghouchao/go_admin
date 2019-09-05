@@ -62,7 +62,7 @@
                                   <th width="250">操作</th>
                               </thead>
                               <tbody class="x-cate">
-                              {{range .}}
+                              {{range .list}}
                                 <tr cate-id='{{.Id}}' fid='0' >
                                 
                                   <td>{{.Id}}</td>
@@ -90,13 +90,7 @@
                         </div>
                         <div class="layui-card-body ">
                             <div class="page">
-                                <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
-                                    <span class="current">2</span>
-                                    <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a></div>
+                                {{.page}}
                             </div>
                         </div>
                     </div>

@@ -53,24 +53,32 @@ func DelArticleByID(articleId int) error {
 	return nil
 }
 
-func GetCateList(cate string) ([]*connect.Cate, error) {
-	cate_sql := "SELECT * FROM `go_cate` "
+func GetCateList(cate string, page int) (int, []*connect.Cate, error) {
+	cate_sql := ""
 	if cate != "" {
 		cate_sql += " WHERE name LIKE '" + strings.TrimSpace(cate) + "%'"
 	}
+	var (
+		count int
+		res   []*connect.Cate
+	)
+	err := db.QueryRow(`select count(*) FROM go_cate` + cate_sql).Scan(&count)
+	if err != nil {
+		return count, res, err
+	}
 
-	stmt, err := db.Prepare(cate_sql + " ORDER BY id DESC LIMIT ?")
-	var res []*connect.Cate
-	rows, err := stmt.Query(connect.PageSize)
+	stmt, err := db.Prepare("SELECT * FROM `go_cate`" + cate_sql + " ORDER BY id DESC LIMIT ?,?")
+
+	rows, err := stmt.Query((page-1)*connect.PageSize, connect.PageSize)
 
 	if err != nil {
-		return res, err
+		return count, res, err
 	}
 
 	for rows.Next() {
 		var id, name, status string
 		if err := rows.Scan(&id, &name, &status); err != nil {
-			return res, err
+			return count, res, err
 		}
 		c := &connect.Cate{
 			Id:     id,
@@ -80,7 +88,7 @@ func GetCateList(cate string) ([]*connect.Cate, error) {
 		res = append(res, c)
 	}
 	defer stmt.Close()
-	return res, nil
+	return count, res, nil
 }
 
 func DelCateByID(id int) error {

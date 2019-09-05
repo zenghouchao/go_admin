@@ -2,9 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"github.com/ixre/gof/web/pager"
 	"go_admin/connect"
 	"go_admin/dao"
+	pager "go_admin/page"
 	"go_admin/utils"
 	"html/template"
 	"log"
@@ -196,6 +196,7 @@ func ArticleEditPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CateListHandler(w http.ResponseWriter, r *http.Request) {
+	var p int
 	tpl, err := template.ParseFiles("./template/article/cate.html")
 	if err != nil {
 		fmt.Println("Loading template error:" + err.Error())
@@ -204,16 +205,32 @@ func CateListHandler(w http.ResponseWriter, r *http.Request) {
 	// 搜索请求
 	query := r.URL.Query()
 	catName := query.Get("cate_name")
+	page := query.Get("page")
+
+	if page == "" {
+		p = 1
+	} else {
+		p, _ = strconv.Atoi(page)
+	}
 
 	// 获取栏目数据
-	res, catesErr := dao.GetCateList(catName)
+	count, data, catesErr := dao.GetCateList(catName, p)
 	if catesErr != nil {
 		fmt.Println("获取栏目数据失败")
 		return
 	}
 
+	// page
+	ps := pager.NewUrlPager(pager.MathPages(count, connect.PageSize), p, "/cate?page=%d")
+	pagerHtml := ps.PagerString()
+
+	params := map[string]interface{}{
+		"page": template.HTML(pagerHtml),
+		"list": data,
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	if err = tpl.Execute(w, res); err != nil {
+	if err = tpl.Execute(w, params); err != nil {
 		fmt.Println("load cate template error:", err.Error())
 	}
 }
