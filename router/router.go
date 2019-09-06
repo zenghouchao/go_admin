@@ -25,4 +25,7 @@ func init() {
 	http.HandleFunc("/cate/add", handler.LoginInterceptor(handler.CateAddHandler))
 	http.HandleFunc("/cate/delete", handler.LoginInterceptor(handler.CateDelHandler))
 	http.HandleFunc("/cate/saveState", handler.LoginInterceptor(handler.CateStatusSaveHandler))
+
+	// 邮件配置、
+	http.HandleFunc("/email", handler.LoginInterceptor(handler.SetEmailTemplateHandler))
 }
