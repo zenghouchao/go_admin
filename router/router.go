@@ -28,4 +28,5 @@ func init() {
 
 	// 邮件配置、
 	http.HandleFunc("/email", handler.LoginInterceptor(handler.SetEmailTemplateHandler))
+	http.HandleFunc("/email/send", handler.LoginInterceptor(handle.SendEmailHandeler))
 }
