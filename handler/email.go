@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"go_admin/connect"
 	"go_admin/utils"
-	"gopkg.in/gomail.v2"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func SetEmailTemplateHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,24 +22,26 @@ func SetEmailTemplateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendEmailHandeler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	postForm := r.PostForm
-	fmt.Println(postForm)
-	m := gomail.NewMessage()
-	m.SetHeader("From", postForm.Get("fromUser"))
-	m.SetHeader("To", postForm.Get("toUser"))
-	m.SetHeader("Subject", postForm.Get("subject"))
-	m.SetBody("text/html", postForm.Get("content"))
+	if r.Method == "POST" {
+		r.ParseForm()
+		postForm := r.PostForm
+		subject := strings.TrimSpace(postForm.Get("subject"))
+		body := strings.TrimSpace(postForm.Get("content"))
+		// 可能有多个收件人
+		mailTo := strings.Split(postForm.Get("toUser"), ";")
+		mailFrom := strings.TrimSpace(postForm.Get("fromUser"))
 
-	d := gomail.NewDialer(connect.EMAIL_HOST, connect.EMAIL_PORT, connect.EMAIL_USER, connect.EMAIL_PASS)
+		err := utils.SendMail(mailFrom, mailTo, subject, body)
+		fmt.Println("send email error:", err)
 
-	var response []byte
-	if err := d.DialAndSend(m); err != nil {
-		log.Println("send email error:", err.Error())
-		response = utils.JsonReturn(connect.ERR_API, err.Error())
-	} else {
-		response = utils.JsonReturn(connect.OK_API, "发送邮件成功")
+		var response []byte
+		if err != nil {
+			log.Println("send email error:", err.Error())
+			response = utils.JsonReturn(connect.ERR_API, err.Error())
+		} else {
+			response = utils.JsonReturn(connect.OK_API, "发送邮件成功")
+		}
+		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
+		w.Write(response)
 	}
-	w.Header().Set("Content-Length", strconv.Itoa(len(response)))
-	w.Write(response)
 }

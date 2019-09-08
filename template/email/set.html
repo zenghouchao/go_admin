@@ -24,17 +24,12 @@
 
                     <div class="layui-form-item">
                         <label for="fromUser" class="layui-form-label">
-                            <span class="x-red">*</span>发件人</label>
+                            <span class="x-red">*</span>发件箱</label>
                         <div class="layui-input-inline">
                             <input type="text" id="fromUser" name="fromUser" required="" lay-verify="email"  class="layui-input"></div>
-                    </div>
-
-
-                     <div class="layui-form-item">
-                        <label for="toUser" class="layui-form-label">
-                            <span class="x-red">*</span>收件人</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="toUser" name="toUser" required="" lay-verify="email" class="layui-input"></div>
+                             <div class="layui-form-mid layui-word-aux">
+                          <span class="x-red">*</span>发件箱需要开启SMTP邮箱服务！
+                            </div>
                     </div>
 
 
@@ -43,6 +38,17 @@
                             <span class="x-red">*</span>主题</label>
                         <div class="layui-input-inline">
                             <input type="text" id="subject" name="subject" required="" lay-verify="required"  class="layui-input"></div>
+                    </div>
+
+
+                     <div class="layui-form-item">
+                        <label for="toUser" class="layui-form-label">
+                            <span class="x-red">*</span>收件人</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="toUser" name="toUser" required="" lay-verify="required" class="layui-input"></div>
+                            <div class="layui-form-mid layui-word-aux">
+                          <span class="x-red">*</span>多个收件箱用 ;号分割！
+                            </div>
                     </div>
 
                 <!--    
@@ -58,14 +64,14 @@
                     <div class="layui-form-item layui-form-text">
                         <label for="content" class="layui-form-label">
                          <span class="x-red">*</span>内容</label>
-                        <div class="layui-input-inline">
+                        <div class="layui-input-block">
                             <textarea placeholder="请输入邮件内容" id="content" name="content" class="layui-textarea" lay-verify="required" ></textarea>
                         </div>
                     </div>
                
                     <div class="layui-form-item">
                         <label for="L_repass" class="layui-form-label"></label>
-                        <button class="layui-btn layui-btn-warm" lay-filter="send" lay-submit="send">发送邮件</button></div>
+                        <button class="layui-btn layui-btn-warm" lay-filter="send" lay-submit="">发送邮件</button></div>
                 </form>
             </div>
         </div>
@@ -90,7 +96,10 @@
                         } else {
                              layer.alert("邮件发送失败", {icon: 2 });
                         }
-                        return false;
+                        //return false;
+                    }, function(err){
+                        console.log(err)
+                        layer.alert("邮件发送失败", {icon: 2 });
                     })
                 
                 });

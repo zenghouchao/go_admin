@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"go_admin/connect"
+	"gopkg.in/gomail.v2"
+	"strconv"
 )
 
 // 生成32位MD5加密值
@@ -28,4 +30,26 @@ func JsonReturn(errCode int32, msg string) []byte {
 	}
 	return jsonString
 
+}
+
+// 发送邮件
+func SendMail(mailFrom string, mailTo []string, subject string, body string) error {
+	mailConn := map[string]string{
+		"user": connect.EMAIL_USER,
+		"pass": connect.EMAIL_PASS,
+		"host": connect.EMAIL_HOST,
+		"port": connect.EMAIL_PORT,
+	}
+
+	port, _ := strconv.Atoi(mailConn["port"]) //转换端口类型为int
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", mailFrom)
+	m.SetHeader("To", mailTo...)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", body)
+
+	d := gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
+	err := d.DialAndSend(m)
+	return err
 }

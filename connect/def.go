@@ -6,10 +6,10 @@ var Salt = "fhsdnfgdjrweirwe1324186asdasdqw"
 const (
 	OK_API     = 0
 	ERR_API    = 1
-	EMAIL_HOST = "smtp.example.com"
-	EMAIL_PORT = 587
-	EMAIL_USER = "user"
-	EMAIL_PASS = "123456"
+	EMAIL_HOST = ""
+	EMAIL_PORT = ""
+	EMAIL_USER = ""
+	EMAIL_PASS = ""
 )
 
 var PageSize = 10
