@@ -26,7 +26,7 @@
                         <label for="fromUser" class="layui-form-label">
                             <span class="x-red">*</span>发件人</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="fromUser" name="fromUser" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
+                            <input type="text" id="fromUser" name="fromUser" required="" lay-verify="email"  class="layui-input"></div>
                     </div>
 
 
@@ -34,7 +34,7 @@
                         <label for="toUser" class="layui-form-label">
                             <span class="x-red">*</span>收件人</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="toUser" name="toUser" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
+                            <input type="text" id="toUser" name="toUser" required="" lay-verify="email" class="layui-input"></div>
                     </div>
 
 
@@ -42,16 +42,16 @@
                         <label for="subject" class="layui-form-label">
                             <span class="x-red">*</span>主题</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="subject" name="subject" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
+                            <input type="text" id="subject" name="subject" required="" lay-verify="required"  class="layui-input"></div>
                     </div>
 
-                   
+                <!--    
                     <div class="layui-form-item">
                         <label for="L_pass" class="layui-form-label">
                             <span class="x-red">*</span>密码</label>
                         <div class="layui-input-inline">
                             <input type="password" id="L_pass" name="pass" required="" lay-verify="pass" autocomplete="off" class="layui-input"></div>
-                    </div>
+                    </div> -->
 
 
 
@@ -75,23 +75,24 @@
                 var form = layui.form,
                 layer = layui.layer;
 
-            
+        
                 //监听提交
                 form.on('submit(send)',
                 function(data) {
-                    console.log(data);
-                    //发异步，把数据提交给php
-                    layer.alert("增加成功", {
-                        icon: 6
-                    },
-                    function() {
-                        //关闭当前frame
-                        xadmin.close();
+                    //发异步请求
+                    $.post("/email/send", data.field, function(res) {
+                        if (typeof(res) == 'string') {
+                          res = eval('(' + res + ')')
+                        }
 
-                        // 可以对父窗口进行刷新 
-                        xadmin.father_reload();
-                    });
-                    return false;
+                        if (res.errCode === 0) {
+                            layer.alert("邮件发送成功", {icon: 6 });
+                        } else {
+                             layer.alert("邮件发送失败", {icon: 2 });
+                        }
+                        return false;
+                    })
+                
                 });
 
             });

@@ -4,8 +4,12 @@ package connect
 var Salt = "fhsdnfgdjrweirwe1324186asdasdqw"
 
 const (
-	OK_API  = 0
-	ERR_API = 1
+	OK_API     = 0
+	ERR_API    = 1
+	EMAIL_HOST = "smtp.example.com"
+	EMAIL_PORT = 587
+	EMAIL_USER = "user"
+	EMAIL_PASS = "123456"
 )
 
 var PageSize = 10
