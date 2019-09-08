@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -110,4 +111,32 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", http.StatusFound)
 	return
+}
+
+func AdminPassChange(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		r.ParseForm()
+		var response []byte
+		if err := dao.AdminPassChange(r); err != nil {
+			response = utils.JsonReturn(connect.ERR_API, err.Error())
+		} else {
+			response = utils.JsonReturn(connect.OK_API, "修改管理员密码成功")
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
+		w.Write(response)
+		if err == nil {
+			LogoutHandler(w, r)
+		}
+	} else {
+		sess, _ := globalSessions.SessionStart(w, r)
+		defer sess.SessionRelease(w)
+		adminInfo := sess.Get("userInfo")
+		tpl, err := template.ParseFiles("./template/changePass.html")
+		if err != nil {
+			panic("loading change admin user template error~")
+			return
+		}
+		tpl.Execute(w, adminInfo)
+	}
 }

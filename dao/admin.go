@@ -2,7 +2,12 @@ package dao
 
 import (
 	"database/sql"
+	"errors"
+	"go_admin/connect"
+	"go_admin/utils"
 	"log"
+	"net/http"
+	"strings"
 )
 
 func AdminLogin(user string, pass string) bool {
@@ -22,4 +27,29 @@ func AdminLogin(user string, pass string) bool {
 		return false
 	}
 	return true
+}
+
+func AdminPassChange(r *http.Request) error {
+	old_pass := strings.TrimSpace(r.Form.Get("old_pass"))
+	user := r.Form.Get("username")
+	old_pass += connect.Salt
+	ok := AdminLogin(user, utils.Md5(old_pass))
+	if !ok {
+		return errors.New("原密码错误!")
+	}
+
+	pass := strings.TrimSpace(r.Form.Get("pass"))
+	repass := r.Form.Get("repass")
+	if pass != repass {
+		return errors.New("两次密码输入不一致!")
+	}
+
+	pass_new := utils.Md5(repass + connect.Salt)
+	stmt, _ := db.Prepare("UPDATE `go_admin` SET pass = ? WHERE name = ?")
+	_, err := stmt.Exec(pass_new, user)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
 }

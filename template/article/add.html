@@ -103,7 +103,6 @@
                     console.log(data);
                     
                     $.post("/article/add", data.field, function(res) {
-                        console.log(res)
                         if (typeof(res) == 'string') {
                           res = eval('(' + res + ')')
                         }

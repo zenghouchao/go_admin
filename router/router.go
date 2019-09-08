@@ -13,6 +13,7 @@ func init() {
 	http.HandleFunc("/home", handler.LoginInterceptor(handler.AdminHandler))
 	http.HandleFunc("/home/welcome", handler.LoginInterceptor(handler.WelcomeHandler))
 	http.HandleFunc("/logout", handler.LoginInterceptor(handler.LogoutHandler))
+	http.HandleFunc("/adminUser/changePass", handler.LoginInterceptor(handler.AdminPassChange))
 	// 文章管理
 	http.HandleFunc("/article", handler.LoginInterceptor(handler.ArticleListHandler))
 	http.HandleFunc("/article/add", handler.LoginInterceptor(handler.ArticleAddHandler))
