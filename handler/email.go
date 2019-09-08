@@ -32,7 +32,7 @@ func SendEmailHandeler(w http.ResponseWriter, r *http.Request) {
 		mailFrom := strings.TrimSpace(postForm.Get("fromUser"))
 
 		err := utils.SendMail(mailFrom, mailTo, subject, body)
-		fmt.Println("send email error:", err)
+		//fmt.Println("send email error:", err)
 
 		var response []byte
 		if err != nil {
@@ -41,6 +41,7 @@ func SendEmailHandeler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			response = utils.JsonReturn(connect.OK_API, "发送邮件成功")
 		}
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
 		w.Write(response)
 	}
