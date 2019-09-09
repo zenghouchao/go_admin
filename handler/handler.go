@@ -3,11 +3,12 @@ package handler
 import (
 	"fmt"
 	"github.com/astaxie/beego/session"
+	"github.com/dchest/captcha"
 	"go_admin/connect"
 	"go_admin/dao"
 	"go_admin/utils"
 	"html/template"
-	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -42,20 +43,35 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
+	var response []byte
 	if r.Method == "POST" {
 		r.ParseForm()
 		user := r.Form.Get("username")
 		pass := r.Form.Get("password")
-		pass += connect.Salt
-		checkd := dao.AdminLogin(user, utils.Md5(pass))
-		if !checkd {
-			io.WriteString(w, "用户名或密码错误")
-			return
-		}
-		// 登陆成功
+		captchaCode := r.Form.Get("captcha")
+		// 验证码
 		sess, _ := globalSessions.SessionStart(w, r)
 		defer sess.SessionRelease(w)
 
+		captchaId := sess.Get("captcha")
+		fmt.Println(captchaId)
+
+		ok := captcha.VerifyString("12", captchaCode)
+		if !ok {
+			response = utils.JsonReturn(connect.ERR_API, "验证码错误！")
+			w.Write(response)
+			return
+		}
+
+		pass += connect.Salt
+		checkd := dao.AdminLogin(user, utils.Md5(pass))
+		if !checkd {
+			//io.WriteString(w, "用户名或密码错误")
+			response = utils.JsonReturn(connect.ERR_API, "用户名或密码错误！")
+			w.Write(response)
+			return
+		}
+		// 登陆成功
 		err := sess.Set("userInfo", user)
 		if err != nil {
 			panic(err.Error())
@@ -139,5 +155,22 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		tpl.Execute(w, adminInfo)
+	}
+}
+
+// 验证码
+func CaptchaHandler(w http.ResponseWriter, r *http.Request) {
+	id := captcha.New()
+	err := captcha.WriteImage(w, id, captcha.StdWidth, captcha.StdHeight)
+	if err != nil {
+		fmt.Println("生成验证码错误：", err.Error())
+		return
+	}
+	// 给ID存储在SESSION中
+	sess, _ := globalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+	if err = sess.Set("captcha", id); err != nil {
+		log.Println("captcha session store error")
+		return
 	}
 }

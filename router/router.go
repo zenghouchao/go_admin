@@ -9,6 +9,7 @@ func init() {
 	// 静态文件路由注册
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", handler.IndexHandler)
+	http.HandleFunc("/captcha/", handler.CaptchaHandler)
 	http.HandleFunc("/login", handler.DoLogin)
 	http.HandleFunc("/home", handler.LoginInterceptor(handler.AdminHandler))
 	http.HandleFunc("/home/welcome", handler.LoginInterceptor(handler.WelcomeHandler))
