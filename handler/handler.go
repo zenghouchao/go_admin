@@ -8,9 +8,10 @@ import (
 	"go_admin/dao"
 	"go_admin/utils"
 	"html/template"
-	"log"
+	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -39,39 +40,34 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		panic("加载模板失败")
 	}
 	w.Header().Set("Content-Type", "text/html")
-	tpl.Execute(w, nil)
+	id := captcha.New()
+	tpl.Execute(w, id)
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
-	var response []byte
 	if r.Method == "POST" {
 		r.ParseForm()
 		user := r.Form.Get("username")
 		pass := r.Form.Get("password")
 		captchaCode := r.Form.Get("captcha")
 		// 验证码
-		sess, _ := globalSessions.SessionStart(w, r)
-		defer sess.SessionRelease(w)
+		captchaId := r.Form.Get("captchaId")
 
-		captchaId := sess.Get("captcha")
-		fmt.Println(captchaId)
-
-		ok := captcha.VerifyString("12", captchaCode)
+		ok := captcha.VerifyString(captchaId, captchaCode)
 		if !ok {
-			response = utils.JsonReturn(connect.ERR_API, "验证码错误！")
-			w.Write(response)
+			io.WriteString(w, "验证码错误！")
 			return
 		}
 
 		pass += connect.Salt
 		checkd := dao.AdminLogin(user, utils.Md5(pass))
 		if !checkd {
-			//io.WriteString(w, "用户名或密码错误")
-			response = utils.JsonReturn(connect.ERR_API, "用户名或密码错误！")
-			w.Write(response)
+			io.WriteString(w, "用户名或密码错误！")
 			return
 		}
 		// 登陆成功
+		sess, _ := globalSessions.SessionStart(w, r)
+		defer sess.SessionRelease(w)
 		err := sess.Set("userInfo", user)
 		if err != nil {
 			panic(err.Error())
@@ -126,7 +122,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//http.Redirect(w, r, "/", http.StatusFound) 会调用auth验证此处多余
+	http.Redirect(w, r, "/", http.StatusFound)
 	return
 }
 
@@ -160,17 +156,12 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 
 // 验证码
 func CaptchaHandler(w http.ResponseWriter, r *http.Request) {
-	id := captcha.New()
+	url := r.RequestURI[9:]
+	id := url[:strings.Index(url, ".png")]
+
 	err := captcha.WriteImage(w, id, captcha.StdWidth, captcha.StdHeight)
 	if err != nil {
 		fmt.Println("生成验证码错误：", err.Error())
-		return
-	}
-	// 给ID存储在SESSION中
-	sess, _ := globalSessions.SessionStart(w, r)
-	defer sess.SessionRelease(w)
-	if err = sess.Set("captcha", id); err != nil {
-		log.Println("captcha session store error")
 		return
 	}
 }

@@ -23,15 +23,16 @@
         <div class="message">Golang后台系统-管理登录</div>
         <div id="darkbannerwrap"></div>
         
-        <form class="layui-form" >
+        <form class="layui-form" method="POST" action="/login">
+            <input type="hidden" name="captchaId" value="{{.}}"/>
             <input name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input">
             <hr class="hr15">
             <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
             <hr class="hr15">
             <input name="captcha" lay-verify="required" placeholder="验证码"  type="text" class="layui-input" >
-            <p><img id=image src="/captcha" alt="Captcha image" title="点击更换" height="60"></p>
+            <p><a href="#" onclick="reload()"><img id=image src="/captcha/{{.}}.png" alt="Captcha image" title="点击更换" height="60"></a></p>
             <hr class="hr15">
-            <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="button"  lay-filter="login" lay-submit="">
+            <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit"  lay-filter="login" lay-submit="">
             <hr class="hr20" >
         </form>
     </div>
@@ -39,26 +40,3 @@
 </body>
 </html>
 
- <script>
- layui.use(['form', 'layer'],
-    function() {
-        $ = layui.jquery;
-        var form = layui.form,
-        layer = layui.layer;
-
-        form.on('submit(login)', function(data) {
-            $.post("/login", data.field, function(res) {
-                if (typeof(res) == 'string') {
-                  res = eval('(' + res + ')')
-                }
-
-                if (res.errCode > 0) {
-                    layer.msg(res.msg, {icon:2, time:1000})
-                    return false;
-                }
-            })
-           
-        });
-
-    });
-</script>
