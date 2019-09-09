@@ -109,7 +109,8 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("session delete error: " + err.Error())
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusFound)
+
+	//http.Redirect(w, r, "/", http.StatusFound) 会调用auth验证此处多余
 	return
 }
 
@@ -121,13 +122,13 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 			response = utils.JsonReturn(connect.ERR_API, err.Error())
 		} else {
 			response = utils.JsonReturn(connect.OK_API, "修改管理员密码成功")
+			defer LogoutHandler(w, r)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
 		w.Write(response)
-		if err == nil {
-			LogoutHandler(w, r)
-		}
+		return
+
 	} else {
 		sess, _ := globalSessions.SessionStart(w, r)
 		defer sess.SessionRelease(w)
