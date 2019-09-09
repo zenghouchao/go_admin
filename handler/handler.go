@@ -8,7 +8,6 @@ import (
 	"go_admin/dao"
 	"go_admin/utils"
 	"html/template"
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -55,14 +54,14 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 
 		ok := captcha.VerifyString(captchaId, captchaCode)
 		if !ok {
-			io.WriteString(w, "验证码错误！")
+			w.Write([]byte("验证码错误！"))
 			return
 		}
 
 		pass += connect.Salt
 		checkd := dao.AdminLogin(user, utils.Md5(pass))
 		if !checkd {
-			io.WriteString(w, "用户名或密码错误！")
+			w.Write([]byte("用户名或密码错误！"))
 			return
 		}
 		// 登陆成功
