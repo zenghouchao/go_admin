@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"go_admin/connect"
+	"github.com/go_admin/connect"
 	"gopkg.in/gomail.v2"
 	"strconv"
 )

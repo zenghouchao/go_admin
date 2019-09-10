@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"go_admin/connect"
+	"github.com/go_admin/connect"
 	"log"
 	"strconv"
 	"strings"

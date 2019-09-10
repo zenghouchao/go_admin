@@ -2,8 +2,8 @@ package handler
 
 import (
 	"fmt"
-	"go_admin/connect"
-	"go_admin/utils"
+	"github.com/go_admin/connect"
+	"github.com/go_admin/utils"
 	"html/template"
 	"log"
 	"net/http"

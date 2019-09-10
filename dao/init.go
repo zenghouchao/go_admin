@@ -2,7 +2,7 @@ package dao
 
 import (
 	"database/sql"
-	"go_admin/connect"
+	"github.com/go_admin/connect"
 )
 
 var db *sql.DB

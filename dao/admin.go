@@ -3,8 +3,8 @@ package dao
 import (
 	"database/sql"
 	"errors"
-	"go_admin/connect"
-	"go_admin/utils"
+	"github.com/go_admin/connect"
+	"github.com/go_admin/utils"
 	"log"
 	"net/http"
 	"strings"

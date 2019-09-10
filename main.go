@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	_ "go_admin/router"
+	_ "github.com/go_admin/router"
 	"net/http"
 )
 

@@ -1,7 +1,7 @@
 package router
 
 import (
-	"go_admin/handler"
+	"github.com/go_admin/handler"
 	"net/http"
 )
 

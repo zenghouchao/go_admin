@@ -2,10 +2,10 @@ package handler
 
 import (
 	"fmt"
-	"go_admin/connect"
-	"go_admin/dao"
-	pager "go_admin/page"
-	"go_admin/utils"
+	"github.com/go_admin/connect"
+	"github.com/go_admin/dao"
+	pager "github.com/go_admin/page"
+	"github.com/go_admin/utils"
 	"html/template"
 	"log"
 	"net/http"
