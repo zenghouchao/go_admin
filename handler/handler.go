@@ -10,7 +10,6 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -54,6 +53,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 
 		ok := captcha.VerifyString(captchaId, captchaCode)
 		if !ok {
+			w.WriteHeader(http.StatusFound)
 			w.Write([]byte("验证码错误！"))
 			return
 		}
@@ -61,6 +61,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		pass += connect.Salt
 		checkd := dao.AdminLogin(user, utils.Md5(pass))
 		if !checkd {
+			w.WriteHeader(http.StatusFound)
 			w.Write([]byte("用户名或密码错误！"))
 			return
 		}
@@ -150,17 +151,5 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		tpl.Execute(w, adminInfo)
-	}
-}
-
-// 验证码
-func CaptchaHandler(w http.ResponseWriter, r *http.Request) {
-	url := r.RequestURI[9:]
-	id := url[:strings.Index(url, ".png")]
-
-	err := captcha.WriteImage(w, id, captcha.StdWidth, captcha.StdHeight)
-	if err != nil {
-		fmt.Println("生成验证码错误：", err.Error())
-		return
 	}
 }
