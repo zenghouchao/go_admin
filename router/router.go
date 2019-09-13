@@ -12,6 +12,7 @@ func init() {
 	http.HandleFunc("/", handler.IndexHandler)
 	http.Handle("/captcha/", captcha.Server(captcha.StdWidth, captcha.StdHeight))
 	http.HandleFunc("/login", handler.DoLogin)
+	http.HandleFunc("/upload", handler.LoginInterceptor(handler.UploadFile))
 	http.HandleFunc("/home", handler.LoginInterceptor(handler.AdminHandler))
 	http.HandleFunc("/home/welcome", handler.LoginInterceptor(handler.WelcomeHandler))
 	http.HandleFunc("/logout", handler.LoginInterceptor(handler.LogoutHandler))

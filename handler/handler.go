@@ -8,7 +8,9 @@ import (
 	"github.com/go_admin/dao"
 	"github.com/go_admin/utils"
 	"html/template"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -152,4 +154,55 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 		}
 		tpl.Execute(w, adminInfo)
 	}
+}
+
+// 文件上传
+func UploadFile(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "POST" {
+		var response []byte
+		w.Header().Set("Content-Type", "application/json")
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			response = utils.JsonReturn(connect.ERR_API, "No file uploaded！")
+			w.Write(response)
+			return
+		}
+		defer file.Close()
+
+		// 文件上传位置存储|建议OSS
+		currDay := time.Now().Format("20060102")
+		fmt.Println(currDay)
+		filePath := "./static/upload/" + currDay + "/"
+		exists, err := utils.PathExists(filePath)
+		if !exists {
+			// 文件夹不存在则新建
+			if err = os.Mkdir(filePath, os.ModePerm); err != nil {
+				response = utils.JsonReturn(connect.ERR_API, "mkdir failed:"+err.Error())
+				w.Write(response)
+				return
+			}
+		}
+
+		newFile, err := os.Create(filePath + header.Filename)
+		if err != nil {
+			response = utils.JsonReturn(connect.ERR_API, err.Error())
+			w.Write(response)
+			return
+		}
+		defer newFile.Close()
+
+		// 移动目标文件路径
+		_, err = io.Copy(newFile, file)
+		if err != nil {
+			response = utils.JsonReturn(connect.ERR_API, "file upload failed")
+			w.Write(response)
+			return
+		}
+		newFile.Seek(0, 0)
+
+		response = utils.JsonReturn(connect.OK_API, "file upload success")
+		w.Write(response)
+	}
+
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/go_admin/connect"
 	"gopkg.in/gomail.v2"
+	"os"
 	"strconv"
 )
 
@@ -52,4 +53,17 @@ func SendMail(mailFrom string, mailTo []string, subject string, body string) err
 	d := gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
 	err := d.DialAndSend(m)
 	return err
+}
+
+// 检查文件路径是否存在
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
