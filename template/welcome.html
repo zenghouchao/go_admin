@@ -23,7 +23,9 @@
                     <div class="layui-card">
                         <div class="layui-card-body ">
                             <blockquote class="layui-elem-quote">欢迎管理员：
-                                <span class="x-red">{{.adminInfo}}</span>！当前时间:{{.nowTime}}
+                                <span class="x-red">{{.adminInfo.User}}</span>！登陆时间:{{.adminInfo.LoginTime}}
+                                &nbsp;
+                                <span>登陆IP：{{.adminInfo.Ip}}</span>
                             </blockquote>
                         </div>
                     </div>
@@ -137,6 +139,9 @@
                         <div class="layui-card-body ">
                             <table class="layui-table">
                                 <tbody>
+                                   <tr>
+                                        <th>系统时间</th>
+                                        <td>{{.nowTime}}</td></tr>
                                     <tr>
                                         <th>xxx版本</th>
                                         <td>1.0.180420</td></tr>
@@ -150,17 +155,9 @@
                                         <th>运行环境</th>
                                         <td>Apache/2.4.23 (Win32) OpenSSL/1.0.2j mod_fcgid/2.3.9</td></tr>
                                     <tr>
-                                        <th>PHP版本</th>
-                                        <td>5.6.27</td></tr>
-                                    <tr>
-                                        <th>PHP运行方式</th>
-                                        <td>cgi-fcgi</td></tr>
-                                    <tr>
                                         <th>MYSQL版本</th>
                                         <td>5.5.53</td></tr>
-                                    <tr>
-                                        <th>ThinkPHP</th>
-                                        <td>5.0.18</td></tr>
+
                                     <tr>
                                         <th>上传附件限制</th>
                                         <td>2M</td></tr>

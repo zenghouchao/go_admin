@@ -7,8 +7,11 @@ import (
 	"fmt"
 	"github.com/go_admin/connect"
 	"gopkg.in/gomail.v2"
+	"net"
+	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // 生成32位MD5加密值
@@ -66,4 +69,24 @@ func PathExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+// 获取客户端 IP
+func ClientIP(r *http.Request) string {
+	xForwardedFor := r.Header.Get("X-Forwarded-For")
+	ip := strings.TrimSpace(strings.Split(xForwardedFor, ",")[0])
+	if ip != "" {
+		return ip
+	}
+
+	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
+	if ip != "" {
+		return ip
+	}
+
+	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
+		return ip
+	}
+
+	return ""
 }

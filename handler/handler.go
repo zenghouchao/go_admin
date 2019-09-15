@@ -15,6 +15,13 @@ import (
 	"time"
 )
 
+//后台登录用户信息
+type loginMap struct {
+	User      string
+	Ip        string
+	LoginTime string
+}
+
 var (
 	globalSessions *session.Manager
 )
@@ -68,9 +75,13 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// 登陆成功
+		ip := utils.ClientIP(r)
 		sess, _ := globalSessions.SessionStart(w, r)
 		defer sess.SessionRelease(w)
-		err := sess.Set("userInfo", user)
+
+		loginInfo := loginMap{user, ip, time.Now().Format("2006-01-02 15:04:05")}
+		err := sess.Set("userInfo", loginInfo)
+
 		if err != nil {
 			panic(err.Error())
 		}
