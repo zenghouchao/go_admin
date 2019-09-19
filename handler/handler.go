@@ -183,7 +183,6 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 
 		// 文件上传位置存储|建议OSS
 		currDay := time.Now().Format("20060102")
-		fmt.Println(currDay)
 		filePath := "./static/upload/" + currDay + "/"
 		exists, err := utils.PathExists(filePath)
 		if !exists {

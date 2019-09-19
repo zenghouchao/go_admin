@@ -11,7 +11,7 @@ func LoginInterceptor(hFunc func(http.ResponseWriter, *http.Request)) func(http.
 		defer sess.SessionRelease(w)
 		sessionInfo := sess.Get("userInfo")
 		fmt.Println("session is :\n", sessionInfo)
-		if sessionInfo == nil {
+		if sessionInfo == nil || sessionInfo == "" {
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
