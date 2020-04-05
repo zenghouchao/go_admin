@@ -12,6 +12,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"html/template"
 )
 
 // 生成32位MD5加密值
@@ -89,4 +90,9 @@ func ClientIP(r *http.Request) string {
 	}
 
 	return ""
+}
+
+// 表单安全处理
+func InputSafe(s string) string {
+	return template.HTMLEscapeString(strings.TrimSpace(s))
 }

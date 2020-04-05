@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -66,11 +65,11 @@ func ArticleAddHandler(w http.ResponseWriter, r *http.Request) {
 
 		data := &connect.Article{
 			Cate_id: r.PostForm.Get("cateId"),
-			Title:   strings.TrimSpace(r.PostForm.Get("title")),
-			Content: strings.TrimSpace(r.PostForm.Get("desc")),
+			Title:   utils.InputSafe(r.PostForm.Get("title")),
+			Content: utils.InputSafe(r.PostForm.Get("desc")),
 			Time:    theTime.Unix(),
 			Status:  r.PostForm.Get("status"),
-			Author:  strings.TrimSpace(r.PostForm.Get("author")),
+			Author:  utils.InputSafe(r.PostForm.Get("author")),
 		}
 		err := dao.AddArticle(data)
 		var result []byte
@@ -142,11 +141,11 @@ func ArticleUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		data := &connect.Article{
 			Id:      postFrom.Get("id"),
 			Cate_id: postFrom.Get("cateId"),
-			Title:   strings.TrimSpace(postFrom.Get("title")),
-			Content: strings.TrimSpace(postFrom.Get("desc")),
+			Title:   utils.InputSafe(postFrom.Get("title")),
+			Content: utils.InputSafe(postFrom.Get("desc")),
 			Time:    theTime.Unix(),
 			Status:  postFrom.Get("status"),
-			Author:  strings.TrimSpace(postFrom.Get("author")),
+			Author:  utils.InputSafe(postFrom.Get("author")),
 		}
 
 		err := dao.UpdateArtice(data)
