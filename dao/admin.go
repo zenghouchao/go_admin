@@ -21,7 +21,6 @@ func AdminLogin(user string, pass string) bool {
 	if err != nil && err != sql.ErrNoRows {
 		return false
 	}
-
 	defer stmt.Close()
 	if pass != pwd {
 		return false
