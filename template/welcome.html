@@ -15,6 +15,11 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+
+        <script src="/static/chat_module/js/axios.min.js"></script>
+        <script src="/static/chat_module/js/mock-min.js"></script>
+        <script src="/static/chat_module/js/chat-module.min.js"></script>
+
     </head>
     <body>
         <div class="layui-fluid">
@@ -178,3 +183,8 @@
         </div>
     </body>
 </html>
+
+<script type="text/javascript">
+    var cm = new ChatModule({mock_mode:true});
+    console.log("%c使用过程中有啥问题可以联系作者QQ:604712572,欢迎交流","color:#c70012;font-size:1em")
+</script>
