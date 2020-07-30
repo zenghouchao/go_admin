@@ -52,3 +52,31 @@ func AdminPassChange(r *http.Request) error {
 	defer stmt.Close()
 	return nil
 }
+
+func GetUsers(page int) ([]*connect.User, error) {
+	var (
+		username string
+		id       int
+		res      []*connect.User
+	)
+
+	stmt, _ := db.Prepare("SELECT id,name FROM `go_admin` ORDER BY id DESC LIMIT ?,?")
+
+	rows, err := stmt.Query((page-1)*connect.PageSize, connect.PageSize)
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&id, &username); err != nil {
+			return res, err
+		}
+		s := &connect.User{
+			Id:   id,
+			Name: username,
+		}
+		res = append(res, s)
+	}
+	defer stmt.Close()
+	return res, nil
+}

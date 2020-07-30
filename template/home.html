@@ -37,7 +37,7 @@
                     <dl class="layui-nav-child">
                         <!-- 二级菜单 -->
                         <dd>
-                            <a onclick="xadmin.open('个人信息','http://www.baidu.com')">个人信息</a></dd>
+                            <a onclick="xadmin.open('个人信息','')">个人信息</a></dd>
                    
                          <dd>
                             <a onclick="xadmin.add_tab('修改密码','/adminUser/changePass')">修改密码</a></dd>    
@@ -64,14 +64,20 @@
                                 <a onclick="xadmin.add_tab('邮箱配置','/email')">
                                     <i class="iconfont">&#xe69f;</i>
                                     <cite>邮箱配置</cite></a>
+                            </li>
 
+                            <!-- 即时聊天 -->
+                            <li>
+                                <a onclick="xadmin.add_tab('即时聊天','/imChat')">
+                                    <i class="iconfont">&#xe63a;</i>
+                                    <cite>即时聊天</cite></a>
                             </li>
                        
                         </ul>
                     </li>
 
 
-
+                <!-- 文章管理 -->
                     <li>
                         <a href="javascript:;">
                             <i class="iconfont left-nav-li" lay-tips="文章管理">&#xe723;</i>
@@ -93,7 +99,7 @@
                        
                         </ul>
                     </li>
-            
+
                 </ul>
             </div>
         </div>

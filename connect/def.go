@@ -14,7 +14,7 @@ const (
 
 var PageSize = 10
 
-// API响应返回值
+// API response return
 type Response struct {
 	ErrCode int32                    `json:"errCode"`
 	Msg     string                   `json:"msg"`
@@ -38,4 +38,12 @@ type Article struct {
 	Status  string
 	Author  string
 	Pubdate string // Time字段的时间戳格式化
+}
+
+// 用户表结构体
+type User struct {
+	Id       int
+	Name  string
+	Pass  string
+	Time  int
 }
