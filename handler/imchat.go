@@ -19,9 +19,9 @@ func ImChatHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	users, err := dao.GetUsers(p)
 
-	for k, v := range users {
-		fmt.Println(k, v)
-	}
+	//for k, v := range users {
+	//	fmt.Println(k, v)
+	//}
 	if err != nil {
 		panic(err)
 	}

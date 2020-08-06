@@ -128,3 +128,27 @@
 </script>
 </body>
 </html>
+<script>
+    var ws = new WebSocket("ws://" + document.location.host + "/ws");
+
+    var data = {
+        'email': "greatjerry@foxmail.com",
+        'username': 'jerry',
+        'message': 'test'
+    }
+    console.log(JSON.stringify(data))
+    ws.onopen = function (evt) {
+        console.log("Connection open ...");
+        //ws.send("Hello WebSockets!");
+        ws.send(JSON.stringify(data))
+    };
+
+    ws.onmessage = function (evt) {
+        console.log("Received Message: " + evt.data);
+        ws.close();
+    };
+
+    ws.onclose = function (evt) {
+        console.log("Connection closed.");
+    }
+</script>
