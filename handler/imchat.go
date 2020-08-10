@@ -5,6 +5,7 @@ import (
 	"github.com/go_admin/dao"
 	"net/http"
 	"html/template"
+	"reflect"
 	"strconv"
 )
 
@@ -17,11 +18,16 @@ func ImChatHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		p, _ = strconv.Atoi(pageStr)
 	}
-	users, err := dao.GetUsers(p)
 
-	//for k, v := range users {
-	//	fmt.Println(k, v)
-	//}
+	// get current user
+	sess, _ := globalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+	adminInfo := sess.Get("userInfo")
+	immutable := reflect.ValueOf(adminInfo)
+	userId := immutable.FieldByName("UserId").Int()
+
+	users, err := dao.GetUsers(int(userId), p)
+
 	if err != nil {
 		panic(err)
 	}

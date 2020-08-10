@@ -10,30 +10,31 @@ import (
 	"strings"
 )
 
-func AdminLogin(user string, pass string) bool {
-	stmt, err := db.Prepare("SELECT pass FROM `go_admin` WHERE name = ?")
+func AdminLogin(user string, pass string) (int, error) {
+	stmt, err := db.Prepare("SELECT id,pass FROM `go_admin` WHERE name = ?")
 	if err != nil {
 		log.Printf("%s\n", err)
-		return false
+		return 0, err
 	}
 	var pwd string
-	err = stmt.QueryRow(user).Scan(&pwd)
+	var id int
+	err = stmt.QueryRow(user).Scan(&id, &pwd)
 	if err != nil && err != sql.ErrNoRows {
-		return false
+		return 0, err
 	}
 	defer stmt.Close()
 	if pass != pwd {
-		return false
+		return 0, err
 	}
-	return true
+	return id, nil
 }
 
 func AdminPassChange(r *http.Request) error {
 	old_pass := strings.TrimSpace(r.Form.Get("old_pass"))
 	user := r.Form.Get("username")
 	old_pass += connect.Salt
-	ok := AdminLogin(user, utils.Md5(old_pass))
-	if !ok {
+	id, ok := AdminLogin(user, utils.Md5(old_pass))
+	if ok != nil {
 		return errors.New("原密码错误!")
 	}
 
@@ -44,8 +45,8 @@ func AdminPassChange(r *http.Request) error {
 	}
 
 	pass_new := utils.Md5(repass + connect.Salt)
-	stmt, _ := db.Prepare("UPDATE `go_admin` SET pass = ? WHERE name = ?")
-	_, err := stmt.Exec(pass_new, user)
+	stmt, _ := db.Prepare("UPDATE `go_admin` SET pass = ? WHERE name = ? AND id = ?")
+	_, err := stmt.Exec(pass_new, user, id)
 	if err != nil {
 		return err
 	}
@@ -53,16 +54,18 @@ func AdminPassChange(r *http.Request) error {
 	return nil
 }
 
-func GetUsers(page int) ([]*connect.User, error) {
+
+// Get chat room users
+func GetUsers(me int, page int) ([]*connect.User, error) {
 	var (
 		username string
 		id       int
 		res      []*connect.User
 	)
 
-	stmt, _ := db.Prepare("SELECT id,name FROM `go_admin` ORDER BY id DESC LIMIT ?,?")
+	stmt, _ := db.Prepare("SELECT id,name FROM `go_admin` WHERE id <> ? ORDER BY id DESC LIMIT ?,?")
 
-	rows, err := stmt.Query((page-1)*connect.PageSize, connect.PageSize)
+	rows, err := stmt.Query(me, (page-1)*connect.PageSize, connect.PageSize)
 	if err != nil {
 		return res, err
 	}
