@@ -11,16 +11,16 @@ import (
 var clients = make(map[*websocket.Conn]bool) // connected clients
 var broadcast = make(chan Message)           // broadcast channel
 
-var upgrader = websocket.Upgrader{
+var upgrader = websocket.Upgrader{ // Upgrade to websocket protocol
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
 }
 
 type Message struct {
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Message  string `json:"message"`
+	Event string `json:"event"`
+	Username  string `json:"username"`
+	Message   string `json:"message"`
 }
 
 func main() {

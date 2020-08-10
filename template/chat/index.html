@@ -38,7 +38,7 @@
         <div class="top">
             <div class="avatar"><img width="50" height="50" src="/static/images/robot.jpg"></div>
             <div class="info">
-                <div class="name">聊天机器人</div>
+                <div class="name" user_id="0">聊天机器人</div>
                 <div class="hasOnline">online</div>
             </div>
             <i class="fa fa-star"></i></div>
@@ -74,6 +74,7 @@
         var user_id = obj.find('.info .user').attr('user_id')
         $(".chat .top .avatar img").attr('src', avatar);
         $(".chat .top .info .name").text(name);
+        $(".chat .top .info .name").attr('user_id', user_id)
         $(".chat .messages").empty();
     }
 
@@ -107,7 +108,6 @@
         };
 
         insertI = function () {
-            console.log(111)
             var innerText, otvet;
             innerText = $.trim($("#texxt").val());
             if (innerText !== "") {
@@ -131,7 +131,21 @@
                 }
             });
             return $(".send").click(function () {
-                return insertI();
+                var msg = $("#texxt").val();
+                var chatType = $('.info').find('.name').attr('user_id');
+
+                if (chatType == 0) {
+                    return insertI(); // robot
+                } else {
+                    var username = $(".chat .top .info .name").text();
+                    var data = {
+                        'event': "0",
+                        'username': username,
+                        'message': msg,
+                    }
+                    ws.send(JSON.stringify(data))
+                }
+                $("#texxt").val('');
             });
         });
 
@@ -142,17 +156,8 @@
 <script>
     var ws = new WebSocket("ws://" + document.location.host + "/ws");
 
-    var data = {
-        'email': "greatjerry@foxmail.com",
-        'username': 'jerry',
-        'message': 'test',
-        'to_user_id': 1
-    }
-    console.log(JSON.stringify(data))
     ws.onopen = function (evt) {
         console.log("Connection open ...");
-        //ws.send("Hello WebSockets!");
-        ws.send(JSON.stringify(data))
     };
 
     ws.onmessage = function (evt) {
