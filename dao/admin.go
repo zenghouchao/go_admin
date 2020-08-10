@@ -5,27 +5,27 @@ import (
 	"errors"
 	"github.com/go_admin/connect"
 	"github.com/go_admin/utils"
-	"log"
 	"net/http"
 	"strings"
 )
 
 func AdminLogin(user string, pass string) (int, error) {
+	var id int
 	stmt, err := db.Prepare("SELECT id,pass FROM `go_admin` WHERE name = ?")
 	if err != nil {
-		log.Printf("%s\n", err)
 		return 0, err
 	}
 	var pwd string
-	var id int
+
 	err = stmt.QueryRow(user).Scan(&id, &pwd)
 	if err != nil && err != sql.ErrNoRows {
-		return 0, err
+		return id, err
 	}
 	defer stmt.Close()
 	if pass != pwd {
-		return 0, err
+		return id, err
 	}
+
 	return id, nil
 }
 
@@ -53,7 +53,6 @@ func AdminPassChange(r *http.Request) error {
 	defer stmt.Close()
 	return nil
 }
-
 
 // Get chat room users
 func GetUsers(me int, page int) ([]*connect.User, error) {

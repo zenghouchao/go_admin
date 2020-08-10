@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-		"github.com/astaxie/beego/session"
+	"github.com/astaxie/beego/session"
 	"github.com/dchest/captcha"
 	"github.com/go_admin/connect"
 	"github.com/go_admin/dao"
@@ -69,7 +69,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		}
 
 		pass += connect.Salt
-		id,checkd := dao.AdminLogin(user, utils.Md5(pass))
+		id, checkd := dao.AdminLogin(user, utils.Md5(pass))
 		if checkd != nil {
 			w.WriteHeader(http.StatusFound)
 			w.Write([]byte("用户名或密码错误！"))
@@ -80,7 +80,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		sess, _ := globalSessions.SessionStart(w, r)
 		defer sess.SessionRelease(w)
 
-		loginInfo := loginMap{id,user, ip, time.Now().Format("2006-01-02 15:04:05")}
+		loginInfo := loginMap{id, user, ip, time.Now().Format("2006-01-02 15:04:05")}
 		err := sess.Set("userInfo", loginInfo)
 
 		if err != nil {

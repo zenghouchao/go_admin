@@ -25,6 +25,7 @@ func ImChatHandler(w http.ResponseWriter, r *http.Request) {
 	adminInfo := sess.Get("userInfo")
 	immutable := reflect.ValueOf(adminInfo)
 	userId := immutable.FieldByName("UserId").Int()
+	fmt.Println(userId)
 
 	users, err := dao.GetUsers(int(userId), p)
 
@@ -39,8 +40,7 @@ func ImChatHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 
-	var params map[string]interface{}
-	params = map[string]interface{}{
+	params := map[string]interface{}{
 		"users": users,
 	}
 	if err = tpl.Execute(w, params); err != nil {

@@ -24,7 +24,7 @@
         </form>
         <menu class="list-friends">
             {{range .users}}
-                <li>
+                <li onclick="toggleChat({{.Id}},{{.Name}})">
                     <img width="50" height="50" src="/static/images/qEjM1AnybRA.jpg">
                     <div class="info">
                         <div class="user" user_id="{{.Id}}">{{.Name}}</div>
@@ -39,7 +39,7 @@
             <div class="avatar"><img width="50" height="50" src="/static/images/qEjM1AnybRA.jpg"></div>
             <div class="info">
                 <div class="name">Юния Гапонович</div>
-                <div class="hasOnline">在线</div>
+                <div class="hasOnline">online</div>
             </div>
             <i class="fa fa-star"></i></div>
         <ul class="messages">
@@ -47,18 +47,18 @@
                 <div class="head"><span class="time">10:13 AM, Today</span> <span class="name">Буль</span></div>
                 <div class="message">Привет!</div>
             </li>
-            <li class="i">
-                <div class="head"><span class="time">10:13 AM, Today</span> <span class="name">Буль</span></div>
-                <div class="message">)</div>
-            </li>
-            <li class="i">
-                <div class="head"><span class="time">10:14 AM, Today</span> <span class="name">Буль</span></div>
-                <div class="message">М не счастья..</div>
-            </li>
-            <li class="friend-with-a-SVAGina">
-                <div class="head"><span class="name">Юния</span> <span class="time">10:15 AM, Today</span></div>
-                <div class="message">чего тебе?</div>
-            </li>
+            {{/*            <li class="i">*/}}
+            {{/*                <div class="head"><span class="time">10:13 AM, Today</span> <span class="name">Буль</span></div>*/}}
+            {{/*                <div class="message">)</div>*/}}
+            {{/*            </li>*/}}
+            {{/*            <li class="i">*/}}
+            {{/*                <div class="head"><span class="time">10:14 AM, Today</span> <span class="name">Буль</span></div>*/}}
+            {{/*                <div class="message">М не счастья..</div>*/}}
+            {{/*            </li>*/}}
+            {{/*            <li class="friend-with-a-SVAGina">*/}}
+            {{/*                <div class="head"><span class="name">Юния</span> <span class="time">10:15 AM, Today</span></div>*/}}
+            {{/*                <div class="message">чего тебе?</div>*/}}
+            {{/*            </li>*/}}
         </ul>
         <div class="write-form">
             <textarea placeholder="输入消息" name="e" id="texxt" rows="2"></textarea>
@@ -68,6 +68,11 @@
 <script src='/static/js/jquery.min.js'></script>
 <script src='/static/js/jquery.nicescroll.js'></script>
 <script type="text/javascript">
+    function toggleChat(id, name) {
+        $(".chat .top .info .name").text(name);
+        $(".chat .messages").empty();
+    }
+
     (function () {
         var NYLM, claerResizeScroll, conf, getRandomInt, insertI, lol;
 
@@ -134,7 +139,8 @@
     var data = {
         'email': "greatjerry@foxmail.com",
         'username': 'jerry',
-        'message': 'test'
+        'message': 'test',
+        'to_user_id': 1
     }
     console.log(JSON.stringify(data))
     ws.onopen = function (evt) {
@@ -145,7 +151,7 @@
 
     ws.onmessage = function (evt) {
         console.log("Received Message: " + evt.data);
-        ws.close();
+        //ws.close();
     };
 
     ws.onclose = function (evt) {
