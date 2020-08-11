@@ -121,31 +121,35 @@
             }
         };
 
+        sendMsg = function() {
+            var msg = $("#texxt").val();
+            var chatType = $('.info').find('.name').attr('user_id');
+
+            if (chatType == 0) {
+                return insertI(); // robot
+            } else {
+                var username = $(".chat .top .info .name").text();
+                var data = {
+                    'event': "0",
+                    'username': username,
+                    'message': msg,
+                }
+                ws.send(JSON.stringify(data))
+            }
+            $("#texxt").val('');
+        }
+
         $(document).ready(function () {
             $(".list-friends").niceScroll(conf);
             $(".messages").niceScroll(lol);
             $("#texxt").keypress(function (e) {
                 if (e.keyCode === 13) {
-                    insertI();
+                    sendMsg();
                     return false;
                 }
             });
             return $(".send").click(function () {
-                var msg = $("#texxt").val();
-                var chatType = $('.info').find('.name').attr('user_id');
-
-                if (chatType == 0) {
-                    return insertI(); // robot
-                } else {
-                    var username = $(".chat .top .info .name").text();
-                    var data = {
-                        'event': "0",
-                        'username': username,
-                        'message': msg,
-                    }
-                    ws.send(JSON.stringify(data))
-                }
-                $("#texxt").val('');
+                sendMsg()
             });
         });
 
