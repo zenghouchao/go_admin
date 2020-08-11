@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-//后台登录用户信息
+// login user info
 type loginMap struct {
 	UserId    int
 	User      string
@@ -45,7 +45,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./template/login.html")
 
 	if err != nil {
-		panic("加载模板失败")
+		panic("loading template fail")
 	}
 	w.Header().Set("Content-Type", "text/html")
 	id := captcha.New()
@@ -64,7 +64,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		ok := captcha.VerifyString(captchaId, captchaCode)
 		if !ok {
 			w.WriteHeader(http.StatusFound)
-			w.Write([]byte("验证码错误！"))
+			w.Write([]byte("Verification code error！"))
 			return
 		}
 
@@ -72,7 +72,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		id, checkd := dao.AdminLogin(user, utils.Md5(pass))
 		if checkd != nil {
 			w.WriteHeader(http.StatusFound)
-			w.Write([]byte("用户名或密码错误！"))
+			w.Write([]byte("Incorrect user name or password！"))
 			return
 		}
 		// 登陆成功
@@ -97,7 +97,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./template/home.html")
 	if err != nil {
-		panic("加载后台模板失败")
+		panic("loading template fail")
 	}
 	w.Header().Set("Content-Type", "text/html")
 	sess, _ := globalSessions.SessionStart(w, r)
@@ -112,7 +112,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./template/welcome.html")
 	if err != nil {
-		panic("加载后台模板失败")
+		panic("loading template fail")
 	}
 	sess, _ := globalSessions.SessionStart(w, r)
 	defer sess.SessionRelease(w)
@@ -127,7 +127,7 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	// 清除SESSION
+	// Clear SESSION
 	sess, _ := globalSessions.SessionStart(w, r)
 	defer sess.SessionRelease(w)
 	err := sess.Delete("userInfo")
@@ -147,7 +147,7 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 		if err := dao.AdminPassChange(r); err != nil {
 			response = utils.JsonReturn(connect.ERR_API, err.Error())
 		} else {
-			response = utils.JsonReturn(connect.OK_API, "修改管理员密码成功")
+			response = utils.JsonReturn(connect.OK_API, "Administrator password changed successfully")
 			defer LogoutHandler(w, r)
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -168,7 +168,7 @@ func AdminPassChange(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// 文件上传
+// file upload
 func UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
@@ -182,12 +182,12 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 
-		// 文件上传位置存储|建议OSS
+		// File upload location storage, recommended OSS
 		currDay := time.Now().Format("20060102")
 		filePath := "./static/upload/" + currDay + "/"
 		exists, err := utils.PathExists(filePath)
 		if !exists {
-			// 文件夹不存在则新建
+			// Create a new folder if it does not exist
 			if err = os.Mkdir(filePath, os.ModePerm); err != nil {
 				response = utils.JsonReturn(connect.ERR_API, "mkdir failed:"+err.Error())
 				w.Write(response)
@@ -203,7 +203,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		}
 		defer newFile.Close()
 
-		// 移动目标文件路径
+		// Move target file path
 		_, err = io.Copy(newFile, file)
 		if err != nil {
 			response = utils.JsonReturn(connect.ERR_API, "file upload failed")
