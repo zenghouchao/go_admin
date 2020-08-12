@@ -25,7 +25,6 @@ func ImChatHandler(w http.ResponseWriter, r *http.Request) {
 	adminInfo := sess.Get("userInfo")
 	immutable := reflect.ValueOf(adminInfo)
 	userId := immutable.FieldByName("UserId").Int()
-	fmt.Println(userId)
 
 	users, err := dao.GetUsers(int(userId), p)
 
@@ -42,6 +41,7 @@ func ImChatHandler(w http.ResponseWriter, r *http.Request) {
 
 	params := map[string]interface{}{
 		"users": users,
+		"user":  userId,
 	}
 	if err = tpl.Execute(w, params); err != nil {
 		fmt.Printf("add article template load error: ", err.Error())

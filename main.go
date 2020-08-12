@@ -18,9 +18,10 @@ var upgrader = websocket.Upgrader{ // Upgrade to websocket protocol
 }
 
 type Message struct {
-	Event string `json:"event"`
-	Username  string `json:"username"`
-	Message   string `json:"message"`
+	Event    string `json:"event"`
+	UserId   string `json:"user_id"`
+	Username string `json:"username"`
+	Message  string `json:"message"`
 }
 
 func main() {

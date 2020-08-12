@@ -21,6 +21,7 @@
         <form action="#" class="search">
             <input placeholder="search..." type="search" name="" id="">
             <input type="submit" value="&#xf002;">
+            <input type="hidden" value="{{.user}}" id="self_id">
         </form>
         <menu class="list-friends">
             {{range .users}}
@@ -46,18 +47,6 @@
             {{/*            <li class="i">*/}}
             {{/*                <div class="head"><span class="time">10:13 AM, Today</span> <span class="name">Буль</span></div>*/}}
             {{/*                <div class="message">Привет!</div>*/}}
-            {{/*            </li>*/}}
-            {{/*            <li class="i">*/}}
-            {{/*                <div class="head"><span class="time">10:13 AM, Today</span> <span class="name">Буль</span></div>*/}}
-            {{/*                <div class="message">)</div>*/}}
-            {{/*            </li>*/}}
-            {{/*            <li class="i">*/}}
-            {{/*                <div class="head"><span class="time">10:14 AM, Today</span> <span class="name">Буль</span></div>*/}}
-            {{/*                <div class="message">М не счастья..</div>*/}}
-            {{/*            </li>*/}}
-            {{/*            <li class="friend-with-a-SVAGina">*/}}
-            {{/*                <div class="head"><span class="name">Юния</span> <span class="time">10:15 AM, Today</span></div>*/}}
-            {{/*                <div class="message">чего тебе?</div>*/}}
             {{/*            </li>*/}}
         </ul>
         <div class="write-form">
@@ -121,7 +110,7 @@
             }
         };
 
-        sendMsg = function() {
+        sendMsg = function () {
             var msg = $("#texxt").val();
             var chatType = $('.info').find('.name').attr('user_id');
 
@@ -129,14 +118,15 @@
                 return insertI(); // robot
             } else {
                 var username = $(".chat .top .info .name").text();
+                var user_id = $(".chat .top .info .name").attr('user_id');
                 var data = {
-                    'event': "0",
+                    'event': "chat",
+                    'user_id': user_id,
                     'username': username,
                     'message': msg,
                 }
                 ws.send(JSON.stringify(data))
-                var innerText, otvet;
-                innerText = $.trim($("#texxt").val());
+                var innerText = $.trim($("#texxt").val());
                 if (innerText !== "") {
                     $(".messages").append("<li class=\"i\"><div class=\"head\"><span class=\"time\">" + (new Date().getHours()) + ":" + (new Date().getMinutes()) + " AM, Today</span><span class=\"name\"></span></div><div class=\"message\">" + innerText + "</div></li>");
                     claerResizeScroll();
@@ -173,7 +163,23 @@
 
     ws.onmessage = function (evt) {
         console.log("Received Message: " + evt.data);
-        //ws.close();
+        var self_id = $("#self_id").val()
+        var result = JSON.parse(evt.data)
+        switch (result.event) {
+            case 'chat':
+                if (result.user_id == self_id) {
+                    $(".messages").append("<li class=\"friend-with-a-SVAGina\"><div class=\"head\"><span class=\"name\">" + $(".chat .top .info .name").text() +
+                        " </span><span class=\"time\">" + (new Date().getHours()) + ":" + (new Date().getMinutes()) + "  Today</span></div>" +
+                        "<div class=\"message\">" + result.message + "</div></li>");
+                    $(".messages").getNiceScroll(0).resize();
+                    $(".messages").getNiceScroll(0).doScrollTop(999999, 999);
+                }
+
+                break;
+            default:
+                break;
+        }
+        console.log()
     };
 
     ws.onclose = function (evt) {
