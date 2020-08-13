@@ -15,14 +15,14 @@ import (
 	"html/template"
 )
 
-// 生成32位MD5加密值
+// generates a 32-bit MD5 encrypted value
 func Md5(s string) string {
 	h := md5.New()
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-// 生成API响应JSON数据
+// generate THE API response JSON data
 func JsonReturn(errCode int32, msg string) []byte {
 	res := &connect.Response{
 		ErrCode: errCode,
@@ -37,7 +37,7 @@ func JsonReturn(errCode int32, msg string) []byte {
 
 }
 
-// 发送邮件
+// send email func
 func SendMail(mailFrom string, mailTo []string, subject string, body string) error {
 	mailConn := map[string]string{
 		"user": connect.EMAIL_USER,
@@ -59,7 +59,7 @@ func SendMail(mailFrom string, mailTo []string, subject string, body string) err
 	return err
 }
 
-// 检查文件路径是否存在
+// Check if the file path exists
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -72,7 +72,7 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-// 获取客户端 IP
+// Get the client IP
 func ClientIP(r *http.Request) string {
 	xForwardedFor := r.Header.Get("X-Forwarded-For")
 	ip := strings.TrimSpace(strings.Split(xForwardedFor, ",")[0])
@@ -92,7 +92,7 @@ func ClientIP(r *http.Request) string {
 	return ""
 }
 
-// 表单安全处理
+// Form security handling
 func InputSafe(s string) string {
 	return template.HTMLEscapeString(strings.TrimSpace(s))
 }

@@ -32,7 +32,6 @@ func SendEmailHandeler(w http.ResponseWriter, r *http.Request) {
 		mailFrom := strings.TrimSpace(postForm.Get("fromUser"))
 
 		err := utils.SendMail(mailFrom, mailTo, subject, body)
-		//fmt.Println("send email error:", err)
 
 		var response []byte
 		if err != nil {

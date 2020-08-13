@@ -14,7 +14,6 @@ import (
 )
 
 func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
-	// 获取当前页码
 	var p int
 	query := r.URL.Query()
 	page := query.Get("page")
@@ -26,7 +25,7 @@ func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
 		p, _ = strconv.Atoi(page)
 	}
 
-	// 获取文章信息
+	// get Article info
 	count, data, err := dao.GetArticleList(p)
 	if err != nil {
 		fmt.Println("get article data failure", err.Error())
@@ -74,15 +73,15 @@ func ArticleAddHandler(w http.ResponseWriter, r *http.Request) {
 		err := dao.AddArticle(data)
 		var result []byte
 		if err != nil {
-			result = utils.JsonReturn(connect.ERR_API, "发布文章失败")
+			result = utils.JsonReturn(connect.ERR_API, "Failed to publish article")
 		} else {
-			result = utils.JsonReturn(connect.OK_API, "发布文章成功")
+			result = utils.JsonReturn(connect.OK_API, "Success to publish article")
 		}
 		w.Header().Set("Content-Length", strconv.Itoa(len(result)))
 		w.Write(result)
 
 	} else {
-		// 获取所以栏目
+
 		cates, err := dao.GetOnCate()
 		if err != nil {
 			log.Println("no found cate data error:", err.Error())
@@ -111,16 +110,16 @@ func ArticleDeleteHandler(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		articleId := r.Form.Get("id")
 		if articleId == "" {
-			result = utils.JsonReturn(connect.ERR_API, "文章ID不能为空")
+			result = utils.JsonReturn(connect.ERR_API, "Article ID cannot be empty")
 			w.Write(result)
 			return
 		}
 		id, _ := strconv.Atoi(articleId)
 		err := dao.DelArticleByID(id)
 		if err != nil {
-			result = utils.JsonReturn(connect.ERR_API, "删除文章失败")
+			result = utils.JsonReturn(connect.ERR_API, "Failed to delete article")
 		} else {
-			result = utils.JsonReturn(connect.OK_API, "删除文章成功")
+			result = utils.JsonReturn(connect.OK_API, "Success to delete article")
 		}
 
 		w.Header().Set("Content-Length", strconv.Itoa(len(result)))
@@ -150,9 +149,9 @@ func ArticleUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := dao.UpdateArtice(data)
 		if err != nil {
-			response = utils.JsonReturn(connect.ERR_API, "更新文章失败！")
+			response = utils.JsonReturn(connect.ERR_API, "Failed！")
 		} else {
-			response = utils.JsonReturn(connect.ERR_API, "更新文章成功！")
+			response = utils.JsonReturn(connect.ERR_API, "Success！")
 		}
 		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
 		w.Write(response)
@@ -241,9 +240,9 @@ func CateAddHandler(w http.ResponseWriter, r *http.Request) {
 		var result []byte
 
 		if err := dao.AddCategory(cateName); err != nil {
-			result = utils.JsonReturn(connect.ERR_API, "新增栏目失败")
+			result = utils.JsonReturn(connect.ERR_API, "Failed")
 		} else {
-			result = utils.JsonReturn(connect.OK_API, "新增栏目成功")
+			result = utils.JsonReturn(connect.OK_API, "Success")
 		}
 		w.Header().Set("Content-Length", strconv.Itoa(len(result)))
 		w.Write(result)
@@ -272,7 +271,7 @@ func CateDelHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			res = utils.JsonReturn(connect.ERR_API, err.Error())
 		} else {
-			res = utils.JsonReturn(connect.OK_API, "删除成功!")
+			res = utils.JsonReturn(connect.OK_API, "Success!")
 		}
 		w.Header().Set("Content-Length", strconv.Itoa(len(res)))
 		w.Write(res)
@@ -287,7 +286,7 @@ func CateStatusSaveHandler(w http.ResponseWriter, r *http.Request) {
 
 		var res []byte
 		if status == "" || id == "" {
-			res = utils.JsonReturn(connect.ERR_API, "缺少参数错误!")
+			res = utils.JsonReturn(connect.ERR_API, "Missing parameter error!")
 			w.Write(res)
 			return
 		}
@@ -296,9 +295,9 @@ func CateStatusSaveHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := dao.SaveCateStatus(cateId, cateStatus)
 		if err != nil {
-			res = utils.JsonReturn(connect.ERR_API, "状态更新失败!")
+			res = utils.JsonReturn(connect.ERR_API, "Status update failed!")
 		} else {
-			res = utils.JsonReturn(connect.OK_API, "状态更新成功!")
+			res = utils.JsonReturn(connect.OK_API, "Status update successful!")
 		}
 		w.Header().Set("Content-Length", strconv.Itoa(len(res)))
 		w.Write(res)
