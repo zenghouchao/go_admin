@@ -92,7 +92,7 @@ func GetCateList(cate string, page int) (int, []*connect.Cate, error) {
 }
 
 func DelCateByID(id int) error {
-	// 栏目下存在文章则不删除
+	// Articles under the column will not be deleted
 	stmt, _ := db.Prepare("SELECT id FROM `go_article` WHERE cateId = ?")
 	row := stmt.QueryRow(id)
 	var articleId string
@@ -101,7 +101,7 @@ func DelCateByID(id int) error {
 	}
 
 	if articleId != "" {
-		return errors.New("该分类下存在文章不能删除!")
+		return errors.New("Articles under this category cannot be deleted\n\n!")
 	}
 
 	stmt, err := db.Prepare("DELETE FROM `go_cate` WHERE id = ?")

@@ -35,13 +35,13 @@ func AdminPassChange(r *http.Request) error {
 	old_pass += connect.Salt
 	id, ok := AdminLogin(user, utils.Md5(old_pass))
 	if ok != nil {
-		return errors.New("原密码错误!")
+		return errors.New("Original password error!")
 	}
 
 	pass := strings.TrimSpace(r.Form.Get("pass"))
 	repass := r.Form.Get("repass")
 	if pass != repass {
-		return errors.New("两次密码输入不一致!")
+		return errors.New("The two password inputs are inconsistent\n\n!")
 	}
 
 	pass_new := utils.Md5(repass + connect.Salt)
