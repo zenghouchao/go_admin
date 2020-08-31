@@ -158,12 +158,12 @@ func ArticleUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// 编辑文章页面
+// article edit page
 func ArticleEditPageHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	id := query.Get("id")
 	aid, _ := strconv.Atoi(id)
-	// 获取文章信息
+	// Get article info
 	data, err := dao.GetFirstArticleByID(aid)
 	if err != nil {
 		fmt.Println("get article data failure:" + err.Error())
@@ -171,7 +171,7 @@ func ArticleEditPageHandler(w http.ResponseWriter, r *http.Request) {
 	formatDate := time.Unix(data.Time, 0).Format("2006-01-02")
 	data.Pubdate = formatDate
 
-	// 获取栏目
+	// Get column data
 	cates, err := dao.GetOnCate()
 	if err != nil {
 		log.Println("no found cate data error:", err.Error())
@@ -200,7 +200,7 @@ func CateListHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Loading template error:" + err.Error())
 		return
 	}
-	// 搜索请求
+	// search request
 	query := r.URL.Query()
 	catName := query.Get("cate_name")
 	page := query.Get("page")
@@ -211,10 +211,10 @@ func CateListHandler(w http.ResponseWriter, r *http.Request) {
 		p, _ = strconv.Atoi(page)
 	}
 
-	// 获取栏目数据
+	// Get column data
 	count, data, catesErr := dao.GetCateList(catName, p)
 	if catesErr != nil {
-		fmt.Println("获取栏目数据失败")
+		fmt.Println("Get column data Fail")
 		return
 	}
 

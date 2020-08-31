@@ -58,7 +58,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		user := r.Form.Get("username")
 		pass := r.Form.Get("password")
 		captchaCode := r.Form.Get("captcha")
-		// 验证码
+		// Verification code
 		captchaId := r.Form.Get("captchaId")
 
 		ok := captcha.VerifyString(captchaId, captchaCode)

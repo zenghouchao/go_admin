@@ -27,7 +27,7 @@ func SendEmailHandeler(w http.ResponseWriter, r *http.Request) {
 		postForm := r.PostForm
 		subject := strings.TrimSpace(postForm.Get("subject"))
 		body := strings.TrimSpace(postForm.Get("content"))
-		// 可能有多个收件人
+		// There may be multiple recipients
 		mailTo := strings.Split(postForm.Get("toUser"), ";")
 		mailFrom := strings.TrimSpace(postForm.Get("fromUser"))
 
@@ -38,7 +38,7 @@ func SendEmailHandeler(w http.ResponseWriter, r *http.Request) {
 			log.Println("send email error:", err.Error())
 			response = utils.JsonReturn(connect.ERR_API, err.Error())
 		} else {
-			response = utils.JsonReturn(connect.OK_API, "发送邮件成功")
+			response = utils.JsonReturn(connect.OK_API, "send success")
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
