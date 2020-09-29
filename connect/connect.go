@@ -12,7 +12,7 @@ var (
 )
 
 func ConnectDB() *sql.DB {
-	cfg, err := ini.Load("config.ini")
+	cfg, err := ini.Load("app.ini")
 	if err != nil {
 		panic(err.Error())
 	}
