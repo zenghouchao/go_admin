@@ -3,11 +3,11 @@ module github.com/go_admin
 go 1.12
 
 require (
-	github.com/astaxie/beego v1.12.0
+	github.com/astaxie/beego v1.12.2
 	github.com/dchest/captcha v0.0.0-20120311190953-b80c582b3330
-	github.com/go-sql-driver/mysql v1.4.1
-	github.com/gorilla/websocket v1.4.2 // indirect
-	google.golang.org/appengine v1.6.6 // indirect
+	github.com/go-sql-driver/mysql v1.5.0
+	github.com/gorilla/websocket v1.4.2
+	github.com/smartystreets/goconvey v1.7.2 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/ini.v1 v1.57.0
